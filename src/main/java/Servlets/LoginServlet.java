@@ -35,7 +35,7 @@ public class LoginServlet extends HttpServlet {
             // Login exitoso
             out.println("<h1>Login exitoso!</h1>");
             // Aquí puedes redirigir a la página de administrador, por ejemplo:
-            // response.sendRedirect("pagina_admin.jsp");
+            response.sendRedirect("ListaPQRS.jsp");
         } else {
             // Login fallido
             out.println("<h1>Login fallido. Intente de nuevo.</h1>");

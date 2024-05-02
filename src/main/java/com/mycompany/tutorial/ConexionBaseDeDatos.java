@@ -14,6 +14,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -117,4 +119,51 @@ public class ConexionBaseDeDatos {
         }
         return false; // Si hubo algún problema durante el proceso, se retorna false por defecto
     }
+   // Método para obtener todas las PQRS con sus datos correspondientes, dándole prioridad a las de tipo "Petición"
+    public List<PQRS> obtenerPQRS() throws SQLException {
+        List<PQRS> pqrsList = new ArrayList<>();
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            conexion = getConexion();
+            if (conexion != null) {
+                String sql = "SELECT * FROM PQRS ORDER BY CASE WHEN Motivo = 'Petición' THEN 0 ELSE 1 END";
+                statement = conexion.prepareStatement(sql);
+                resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    PQRS pqrs = new PQRS();
+                    pqrs.setId(resultSet.getInt("id"));
+                    pqrs.setPrimerNombre(resultSet.getString("PrimerNombre"));
+                    pqrs.setSegundoNombre(resultSet.getString("SegundoNombre"));
+                    pqrs.setPrimerApellido(resultSet.getString("PrimerApellido"));
+                    pqrs.setSegundoApellido(resultSet.getString("SegundoApellido"));
+                    pqrs.setMotivo(resultSet.getString("Motivo"));
+                    pqrs.setEmail(resultSet.getString("email"));
+                    pqrs.setTelefono(resultSet.getString("Telefono"));
+                    pqrs.setMensaje(resultSet.getString("Mensaje"));
+                    pqrsList.add(pqrs);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener las PQRS: " + e.getMessage());
+            throw e;
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (conexion != null) {
+                    conexion.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error al cerrar la conexión: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        }
+        return pqrsList;
+    }   
 }
