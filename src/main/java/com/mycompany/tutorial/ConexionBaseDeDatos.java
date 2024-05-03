@@ -17,6 +17,9 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.util.Properties;
 
 /**
  *
@@ -84,6 +87,7 @@ public class ConexionBaseDeDatos {
             } else {
                 System.out.println("No se pudo insertar la PQRS.");
             }
+          
         }
     } catch (SQLException e) {
         System.out.println("Error al insertar la PQRS: " + e.getMessage());
@@ -175,6 +179,7 @@ public class ConexionBaseDeDatos {
                 if (conexion != null) {
                     conexion.close();
                 }
+                
             } catch (SQLException ex) {
                 System.out.println("Error al cerrar la conexión: " + ex.getMessage());
                 ex.printStackTrace();
@@ -182,4 +187,43 @@ public class ConexionBaseDeDatos {
         }
         return pqrsList;
     }   
+    public static void enviarCorreoRegistroExitoso(String destinatario) {
+        // Configuración del servidor de correo
+        String correoRemitente = "gestorpqrs2@gmail.com";
+        String passwordRemitente = "h g x n n j x w n w c b a d k i";
+        String host = "smtp.gmail.com";
+        int puerto = 587;
+
+        // Propiedades de la sesión
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.port", puerto);
+
+        // Autenticación
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(correoRemitente, passwordRemitente);
+            }
+        });
+
+        try {
+            // Crear mensaje
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(correoRemitente));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+            message.setSubject("Registro Exitoso en el Sistema de PQRS");
+            message.setText("Estimado/a, \n\nSu PQRS ha sido registrada exitosamente en nuestro sistema. \n\nAtentamente,\nEl equipo de soporte.");
+
+            // Enviar correo
+            Transport.send(message);
+
+            System.out.println("Correo de registro exitoso enviado a: " + destinatario);
+        } catch (MessagingException e) {
+            System.out.println("Error al enviar el correo de registro exitoso: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
 }

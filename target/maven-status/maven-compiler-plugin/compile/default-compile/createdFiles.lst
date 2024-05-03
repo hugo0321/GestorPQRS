@@ -6,3 +6,4 @@ Servlets\InsertarPQRSServlet.class
 com\mycompany\tutorial\ConexionBaseDeDatos.class
 Servlets\LoginServlet.class
 com\mycompany\tutorial\JakartaRestConfiguration.class
+com\mycompany\tutorial\ConexionBaseDeDatos$1.class
