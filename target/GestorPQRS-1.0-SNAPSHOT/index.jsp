@@ -188,7 +188,7 @@
                         <!-- To make this form functional, sign up at-->
                         <!-- https://startbootstrap.com/solution/contact-forms-->
                         <!-- to get an API token!-->
-        <form id="contactForm" action="InsertarPQRSServlet" method="post" onsubmit="return validarFormulario()">
+        <form id="contactForm" action="InsertarPQRSServlet" method="post" enctype="multipart/form-data" onsubmit="return validarFormulario()">
 
     <!-- Primer Nombre input -->
     <div class="form-floating mb-3">
@@ -240,8 +240,17 @@
     
     <!-- Message input -->
     <div class="form-floating mb-3">
-        <textarea class="form-control required" id="message" type="text" placeholder="Enter your message here..." style="height: 10rem" name="mensaje"></textarea>
+        <textarea class="form-control" id="message" type="text" placeholder="Enter your message here..." style="height: 10rem" name="mensaje"></textarea>
+
         <label for="message">Mensaje</label>
+    </div>
+    
+    <!-- Campo de carga de archivo PDF -->
+    <div class="form-group mb-3">
+        <label for="pdfFile">Adjuntar PDF (máximo 20 MB)</label>
+        <input type="file" class="form-control-file" id="pdfFile" name="pdfFile" accept=".pdf" onchange="validarPDF(this)">
+        <small id="pdfHelp" class="form-text text-muted">Por favor, seleccione un archivo PDF de máximo 20 MB.</small>
+        <div id="pdfError" class="invalid-feedback">Solo se permiten archivos PDF.</div>
     </div>
     
     <!-- Submit Button -->
@@ -254,6 +263,24 @@
 <script>
     function validarFormulario() {
         var inputs = document.querySelectorAll('.required');
+        var pdfFile = document.getElementById('pdfFile');
+        var message = document.getElementById('message').value.trim();
+
+        // Verificar si se proporciona un PDF o un mensaje
+        if (pdfFile.files.length === 0 && message === '') {
+            alert('Debe adjuntar un archivo PDF o completar el campo de mensaje.');
+            return false;
+        }
+
+        // Si se proporciona un PDF, verificar si es un archivo PDF válido
+        if (pdfFile.files.length > 0) {
+            var isValidPDF = validarPDF(pdfFile);
+            if (!isValidPDF) {
+                return false;
+            }
+        }
+
+        // Validar campos de texto requeridos
         var valid = true;
         inputs.forEach(function(input) {
             if (input.value.trim() === '') {
@@ -263,9 +290,45 @@
                 input.classList.remove('is-invalid');
             }
         });
+
         return valid;
     }
+
+    function toggleRequiredAttribute() {
+        var pdfFile = document.getElementById('pdfFile');
+        var messageInput = document.getElementById('message');
+
+        // Si se selecciona un archivo PDF, el campo de mensaje no es obligatorio
+        if (pdfFile.files.length > 0) {
+            messageInput.removeAttribute('required');
+        } else {
+            messageInput.setAttribute('required', 'required');
+        }
+    }
+
+    // Validar PDF
+    function validarPDF(input) {
+        var file = input.files[0];
+        var fileSize = file.size / 1024 / 1024; // Tamaño en MB
+
+        if (file.type !== 'application/pdf') {
+            alert("El archivo seleccionado no es un PDF válido. Por favor, seleccione un archivo PDF.");
+            input.value = ''; // Limpiar el valor del input para que el usuario pueda seleccionar otro archivo
+            return false;
+        } else if (fileSize > 20) {
+            alert("El archivo seleccionado excede el tamaño máximo permitido (20 MB). Por favor, seleccione otro archivo.");
+            input.value = ''; // Limpiar el valor del input para que el usuario pueda seleccionar otro archivo
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    document.getElementById('pdfFile').addEventListener('change', toggleRequiredAttribute);
 </script>
+
+
+
 
 <style>
     .is-invalid {

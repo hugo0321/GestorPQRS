@@ -10,6 +10,8 @@ import java.sql.Timestamp;
  *
  * @author Hugo
  */
+import java.sql.Timestamp;
+
 public class PQRS {
     private int id;
     private String primerNombre;
@@ -20,6 +22,7 @@ public class PQRS {
     private String email;
     private String telefono;
     private String mensaje;
+    private String rutaPDF; // Nuevo atributo
     private Timestamp horaSolicitud;
 
     // Constructor
@@ -98,7 +101,16 @@ public class PQRS {
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
     }
-     public Timestamp getHoraSolicitud() {
+
+    public String getRutaPDF() {
+        return rutaPDF;
+    }
+
+    public void setRutaPDF(String rutaPDF) {
+        this.rutaPDF = rutaPDF;
+    }
+
+    public Timestamp getHoraSolicitud() {
         return horaSolicitud;
     }
 

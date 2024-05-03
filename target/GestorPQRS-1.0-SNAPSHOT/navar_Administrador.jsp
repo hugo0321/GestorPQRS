@@ -39,6 +39,7 @@
                         <a class="nav-link" href="#">Pricing</a>
                     </li>
                 </ul>
+                
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <form action="CerrarSesionServlet" method="post">

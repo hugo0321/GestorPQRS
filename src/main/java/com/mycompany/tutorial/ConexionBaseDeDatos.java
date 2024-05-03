@@ -14,6 +14,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,42 +49,56 @@ public class ConexionBaseDeDatos {
         }
         return conexion;
     }
-     public static void insertarPQRS(String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String email, String telefono, String mensaje) throws SQLException {
-        Connection conexion = null;
-        PreparedStatement statement = null;
-        try {
-            conexion = getConexion();
-            if (conexion != null) {
-                String sql = "INSERT INTO PQRS (PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Motivo, email, Telefono, Mensaje) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                statement = conexion.prepareStatement(sql);
-                statement.setString(1, primerNombre);
-                statement.setString(2, segundoNombre);
-                statement.setString(3, primerApellido);
-                statement.setString(4, segundoApellido);
-                statement.setString(5, motivo);
-                statement.setString(6, email);
-                statement.setString(7, telefono);
-                statement.setString(8, mensaje);
+   public static void insertarPQRS(String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String email, String telefono, String mensaje, String rutaPDF) throws SQLException {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            String sql = "INSERT INTO PQRS (PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Motivo, email, Telefono, Mensaje, RutaPDF) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            statement = conexion.prepareStatement(sql);
+            statement.setString(1, primerNombre);
+            statement.setString(2, segundoNombre);
+            statement.setString(3, primerApellido);
+            statement.setString(4, segundoApellido);
+            statement.setString(5, motivo);
+            statement.setString(6, email);
+            statement.setString(7, telefono);
 
-                int filasInsertadas = statement.executeUpdate();
-                if (filasInsertadas > 0) {
-                    System.out.println("PQRS insertada correctamente.");
-                } else {
-                    System.out.println("No se pudo insertar la PQRS.");
-                }
+            // Verificar si se proporcionó un mensaje o un PDF y establecer el valor correspondiente en la consulta SQL
+            if (mensaje != null && !mensaje.isEmpty()) {
+                statement.setString(8, mensaje);
+            } else {
+                statement.setNull(8, Types.VARCHAR);
             }
-        } catch (SQLException e) {
-            System.out.println("Error al insertar la PQRS: " + e.getMessage());
-            throw e;
-        } finally {
-            if (statement != null) {
-                statement.close();
+
+            if (rutaPDF != null && !rutaPDF.isEmpty()) {
+                statement.setString(9, rutaPDF);
+            } else {
+                statement.setNull(9, Types.VARCHAR);
             }
-            if (conexion != null) {
-                conexion.close();
+
+            int filasInsertadas = statement.executeUpdate();
+            if (filasInsertadas > 0) {
+                System.out.println("PQRS insertada correctamente.");
+            } else {
+                System.out.println("No se pudo insertar la PQRS.");
             }
         }
+    } catch (SQLException e) {
+        System.out.println("Error al insertar la PQRS: " + e.getMessage());
+        throw e;
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (conexion != null) {
+            conexion.close();
+        }
     }
+}
+
+
       public static boolean loginAdmin(String nombreUsuario, String contrasena) {
         Connection conexion = null;
         PreparedStatement statement = null;
