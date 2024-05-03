@@ -4,6 +4,8 @@
  */
 package com.mycompany.tutorial;
 
+import java.sql.Timestamp;
+
 /**
  *
  * @author Hugo
@@ -18,6 +20,7 @@ public class PQRS {
     private String email;
     private String telefono;
     private String mensaje;
+    private Timestamp horaSolicitud;
 
     // Constructor
     public PQRS() {
@@ -94,5 +97,12 @@ public class PQRS {
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+     public Timestamp getHoraSolicitud() {
+        return horaSolicitud;
+    }
+
+    public void setHoraSolicitud(Timestamp horaSolicitud) {
+        this.horaSolicitud = horaSolicitud;
     }
 }

@@ -4,6 +4,8 @@
  */
 package Servlets;
 
+
+
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,16 +14,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet("/ControlAcceso")
-public class ControlAccesoServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+@WebServlet("/CerrarSesionServlet")
+public class CerrarSesionServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("usuario") != null) {
-            // El usuario ha iniciado sesión, redirigir a ListarPQRS.jsp
-            response.sendRedirect("ListaPQRS.jsp");
-        } else {
-            // El usuario no ha iniciado sesión, redirigir a login.jsp
-            response.sendRedirect("login.jsp");
+        if (session != null) {
+            session.invalidate(); // Invalida la sesión actual
         }
+        response.sendRedirect("login.jsp"); // Redirige al formulario de inicio de sesión
     }
 }
+

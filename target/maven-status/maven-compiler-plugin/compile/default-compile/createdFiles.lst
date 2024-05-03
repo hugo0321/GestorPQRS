@@ -1,7 +1,8 @@
+Servlets\ControlAccesoServlet.class
+Servlets\CerrarSesionServlet.class
 com\mycompany\tutorial\PQRS.class
 com\mycompany\tutorial\resources\JakartaEE8Resource.class
 Servlets\InsertarPQRSServlet.class
 com\mycompany\tutorial\ConexionBaseDeDatos.class
 Servlets\LoginServlet.class
 com\mycompany\tutorial\JakartaRestConfiguration.class
-com\mycompany\tutorial\AuthFilter.class

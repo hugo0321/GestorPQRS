@@ -142,6 +142,7 @@ public class ConexionBaseDeDatos {
                     pqrs.setEmail(resultSet.getString("email"));
                     pqrs.setTelefono(resultSet.getString("Telefono"));
                     pqrs.setMensaje(resultSet.getString("Mensaje"));
+                    pqrs.setHoraSolicitud(resultSet.getTimestamp("HoraSolicitud"));
                     pqrsList.add(pqrs);
                 }
             }

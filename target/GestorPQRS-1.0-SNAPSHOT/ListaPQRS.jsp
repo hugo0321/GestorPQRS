@@ -18,57 +18,93 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    
+    <jsp:include page="navar_Administrador.jsp" />
     <meta charset="UTF-8">
-    <title>Listado de Tutoriales</title>
-    
+    <title>Listado de PQRS</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            background-color: #fff;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .no-data {
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Listado de PQRS</h1>
-        <h2>Esta es la lista de todas las PQRS:</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Primer Nombre</th>
-                    <th scope="col">Segundo Nombre</th>
-                    <th scope="col">Primer Apellido</th>
-                    <th scope="col">Segundo Apellido</th>
-                    <th scope="col">Motivo</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Teléfono</th>
-                    <th scope="col">Mensaje</th>
-                </tr>
-            </thead>
-            <tbody class="table-group-divider">
-                <% 
-                ConexionBaseDeDatos controlador = new ConexionBaseDeDatos();
-                List<PQRS> listaPQRS = controlador.obtenerPQRS();
-                if (listaPQRS != null && !listaPQRS.isEmpty()) {
-                    for (PQRS pqrs : listaPQRS) {
-                %>
-                <tr>
-                    <th scope="row"><%= pqrs.getId() %></th>
-                    <td><%= pqrs.getPrimerNombre()%></td>
-                    <td><%= pqrs.getSegundoNombre() %></td>
-                    <td><%= pqrs.getPrimerApellido() %></td>
-                    <td><%= pqrs.getSegundoApellido() %></td>
-                    <td><%= pqrs.getMotivo() %></td>
-                    <td><%= pqrs.getEmail() %></td>
-                    <td><%= pqrs.getTelefono() %></td>
-                    <td><%= pqrs.getMensaje() %></td>
-                </tr>
-                <% 
-                    }
-                } else {
-                %>
-                <tr>
-                    <td colspan="9">No hay PQRS disponibles.</td>
-                </tr>
-                <% } %>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Primer Nombre</th>
+                        <th>Segundo Nombre</th>
+                        <th>Primer Apellido</th>
+                        <th>Segundo Apellido</th>
+                        <th>Motivo</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Mensaje</th>
+                        <th>Fecha/Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% 
+                    ConexionBaseDeDatos controlador = new ConexionBaseDeDatos();
+                    List<PQRS> listaPQRS = controlador.obtenerPQRS();
+                    if (listaPQRS != null && !listaPQRS.isEmpty()) {
+                        for (PQRS pqrs : listaPQRS) {
+                    %>
+                    <tr>
+                        <td><%= pqrs.getId() %></td>
+                        <td><%= pqrs.getPrimerNombre()%></td>
+                        <td><%= pqrs.getSegundoNombre() %></td>
+                        <td><%= pqrs.getPrimerApellido() %></td>
+                        <td><%= pqrs.getSegundoApellido() %></td>
+                        <td><%= pqrs.getMotivo() %></td>
+                        <td><%= pqrs.getEmail() %></td>
+                        <td><%= pqrs.getTelefono() %></td>
+                        <td><%= pqrs.getMensaje() %></td>
+                        <td><%= pqrs.getHoraSolicitud() %></td>
+                    </tr>
+                    <% 
+                        }
+                    } else {
+                    %>
+                    <tr>
+                        <td colspan="10" class="no-data">No hay PQRS disponibles.</td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>
+
