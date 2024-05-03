@@ -60,7 +60,7 @@ public class InsertarPQRSServlet extends HttpServlet {
         try {
             ConexionBaseDeDatos.insertarPQRS(primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath);
             // Envía el correo electrónico al usuario
-            ConexionBaseDeDatos.enviarCorreoRegistroExitoso(email);
+             ConexionBaseDeDatos.enviarCorreoRegistroExitoso(email, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje);
             response.sendRedirect("RegistroExitosoPQRS.jsp");
         } catch (SQLException e) {
             response.sendRedirect("ErrorRegistroPQRS.jsp");
