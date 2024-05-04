@@ -3,6 +3,7 @@
     Created on : 1/05/2024, 9:23:45 p. m.
     Author     : Hugo
 --%>
+
 <%@page import="com.mycompany.tutorial.ConexionBaseDeDatos"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
@@ -61,7 +62,9 @@
                         <% } %>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Perfil</a></li>
+                        <!-- Formulario para solicitar contraseña -->
+       
+        
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="svCerrarSesionUsuario ">Cerrar sesión</a></li>
                     </ul>
@@ -71,6 +74,7 @@
         </div>
     </div>
 </nav>
+
 
       
        <!-- Encabezado -->

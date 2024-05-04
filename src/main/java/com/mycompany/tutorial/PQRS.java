@@ -24,6 +24,7 @@ public class PQRS {
     private String mensaje;
     private String rutaPDF; // Nuevo atributo
     private Timestamp horaSolicitud;
+    private String nombreUsuario; // Nuevo atributo
 
     // Constructor
     public PQRS() {
@@ -116,5 +117,12 @@ public class PQRS {
 
     public void setHoraSolicitud(Timestamp horaSolicitud) {
         this.horaSolicitud = horaSolicitud;
+    }
+        public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
     }
 }

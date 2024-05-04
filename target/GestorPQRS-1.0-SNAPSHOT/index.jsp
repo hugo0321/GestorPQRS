@@ -197,7 +197,63 @@
             <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Contraseña">
         </div>
         <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+              <!-- Botón para abrir la ventana flotante de registro -->
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registroModal">Crear cuenta</button>
     </form>
+</div>
+
+<!-- Ventana flotante de registro -->
+<div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="registroModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registroModalLabel">Registro de usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="registroForm" action="RegistroServlet" method="post">
+                    <div class="mb-3">
+                        <label for="nombreUsuario" class="form-label">Nombre de usuario</label>
+                        <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" pattern="[a-zA-Z0-9.,]+" title="Solo letras, números, '.' y ',' son permitidos" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cedula" class="form-label">Cédula</label>
+                        <input type="text" class="form-control" id="cedula" name="cedula" pattern="[0-9]+" title="Solo números son permitidos" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contrasenaRegistro" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="contrasenaRegistro" name="contrasenaRegistro" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Registrarse</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    </form>
+    <!-- Modal -->
+<div class="modal fade" id="registroExitosoModal" tabindex="-1" role="dialog" aria-labelledby="registroExitosoModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="registroExitosoModalLabel">Registro exitoso</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Registro exitoso: se ha enviado un correo con los detalles de la cuenta.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 

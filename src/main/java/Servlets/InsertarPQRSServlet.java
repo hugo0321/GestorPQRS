@@ -17,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 @WebServlet("/InsertarPQRSServlet")
@@ -35,6 +36,24 @@ public class InsertarPQRSServlet extends HttpServlet {
         String email = request.getParameter("email");
         String telefono = request.getParameter("telefono");
         String mensaje = request.getParameter("mensaje");
+        
+        // Obtener el usuario_id de la sesión
+        HttpSession session = request.getSession();
+        int usuarioId = 0; // Inicializamos el usuarioId
+        
+        if (session.getAttribute("username") != null) {
+            // Si hay una sesión iniciada, obtener el ID de usuario de la sesión
+            String nombreUsuario = (String) session.getAttribute("username");
+            try {
+                usuarioId = ConexionBaseDeDatos.obtenerIdUsuario(nombreUsuario);
+            } catch (SQLException e) {
+                // Manejar la excepción aquí
+                e.printStackTrace();
+                // Redirigir a una página de error
+                response.sendRedirect("ErrorRegistroPQRS.jsp");
+                return;
+            }
+        }
 
         // Obtener el archivo PDF
         Part filePart = request.getPart("pdfFile");
@@ -56,11 +75,11 @@ public class InsertarPQRSServlet extends HttpServlet {
             outputStream.close();
         }
 
-        // Insertar la PQRS en la base de datos con la ruta del archivo
+        // Insertar la PQRS en la base de datos con la ruta del archivo y el usuario_id
         try {
-            ConexionBaseDeDatos.insertarPQRS(primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath);
+            ConexionBaseDeDatos.insertarPQRS(primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath, usuarioId);
             // Envía el correo electrónico al usuario
-             ConexionBaseDeDatos.enviarCorreoRegistroExitoso(email, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje);
+            ConexionBaseDeDatos.enviarCorreoRegistroExitoso(email, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje);
             response.sendRedirect("RegistroExitosoPQRS.jsp");
         } catch (SQLException e) {
             response.sendRedirect("ErrorRegistroPQRS.jsp");
@@ -68,4 +87,6 @@ public class InsertarPQRSServlet extends HttpServlet {
         }
     }
 }
+
+
 
