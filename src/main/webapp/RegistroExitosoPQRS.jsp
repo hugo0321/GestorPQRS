@@ -62,7 +62,7 @@
                     seconds--;
                     setTimeout(countdown, 1000);
                 } else {
-                    window.location.href = "index.jsp";
+                    window.location.href = "indexEntrada.jsp";
                 }
             }
             countdown();
