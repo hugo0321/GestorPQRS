@@ -226,23 +226,23 @@ public static void enviarCorreoRegistroExitoso(String destinatario, String prime
         message.setSubject("Registro Exitoso en el Sistema de PQRS");
 
         // Construir el texto del mensaje con los datos del formulario
-        String textoMensaje = "Estimado/a,\n\nSu PQRS ha sido registrada exitosamente en nuestro sistema. \n\n";
-        textoMensaje += "Detalles de la PQRS:\n";
-        textoMensaje += "Primer Nombre: " + primerNombre + "\n";
-        textoMensaje += "Segundo Nombre: " + segundoNombre + "\n";
-        textoMensaje += "Primer Apellido: " + primerApellido + "\n";
-        textoMensaje += "Segundo Apellido: " + segundoApellido + "\n";
-        textoMensaje += "Motivo: " + motivo + "\n";
-        textoMensaje += "Email: " + email + "\n";
-        textoMensaje += "Teléfono: " + telefono + "\n";
+        String textoMensaje = "Estimado/a,\n\nSu PQRS ha sido registrada exitosamente en nuestro sistema.\n\n";
+        textoMensaje += "<h2>Detalles de la PQRS:</h2>\n";
+        textoMensaje += "<p><strong>Primer Nombre:</strong> " + primerNombre + "</p>\n";
+        textoMensaje += "<p><strong>Segundo Nombre:</strong> " + segundoNombre + "</p>\n";
+        textoMensaje += "<p><strong>Primer Apellido:</strong> " + primerApellido + "</p>\n";
+        textoMensaje += "<p><strong>Segundo Apellido:</strong> " + segundoApellido + "</p>\n";
+        textoMensaje += "<p><strong>Motivo:</strong> " + motivo + "</p>\n";
+        textoMensaje += "<p><strong>Email:</strong> " + email + "</p>\n";
+        textoMensaje += "<p><strong>Teléfono:</strong> " + telefono + "</p>\n";
         
         // Agregar mensaje solo si no es nulo
         if (mensaje != null) {
-            textoMensaje += "Mensaje: " + mensaje + "\n\n";
+            textoMensaje += "<p><strong>Mensaje:</strong> " + mensaje + "</p>\n\n";
         }
 
-        textoMensaje += "Atentamente,\nEl equipo de soporte.\n";
-        message.setText(textoMensaje);
+        textoMensaje += "<p>Atentamente,<br>El equipo de soporte.</p>\n";
+        message.setContent(textoMensaje, "text/html; charset=utf-8");
 
         // Enviar correo
         Transport.send(message);
@@ -253,5 +253,6 @@ public static void enviarCorreoRegistroExitoso(String destinatario, String prime
         e.printStackTrace();
     }
 }
+
 
 }
