@@ -14,7 +14,15 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.mycompany.tutorial.ConexionBaseDeDatos"%>
 <%@page import="java.util.List"%>
-
+<%
+    // Verificar si hay una sesión activa y si el usuario es el administrador
+    HttpSession misession = request.getSession(false);
+    if (misession == null || !"admin".equals((String)misession.getAttribute("username"))) {
+        // Si no hay sesión activa o si el usuario no es el administrador, redirigir a index.jsp
+        response.sendRedirect("index.jsp");
+        return; // Terminar la ejecución de la página actual
+    }
+%>
 <!DOCTYPE html>
 <html lang="es">
 <head>

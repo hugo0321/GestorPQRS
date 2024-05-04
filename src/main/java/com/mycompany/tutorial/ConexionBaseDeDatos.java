@@ -103,41 +103,51 @@ public class ConexionBaseDeDatos {
 }
 
 
-      public static boolean loginAdmin(String nombreUsuario, String contrasena) {
-        Connection conexion = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            conexion = getConexion();
-            if (conexion != null) {
-                String sql = "SELECT * FROM Administradores WHERE nombre_usuario = ? AND contrasena = ?";
-                statement = conexion.prepareStatement(sql);
-                statement.setString(1, nombreUsuario);
-                statement.setString(2, contrasena);
-                resultSet = statement.executeQuery();
-                return resultSet.next(); // Retorna true si hay resultados, es decir, las credenciales son válidas
+   public static boolean login(String nombreUsuario, String contrasena) {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            String sql = "SELECT * FROM Usuarios WHERE nombre_usuario = ? AND contrasena = ?";
+            statement = conexion.prepareStatement(sql);
+            statement.setString(1, nombreUsuario);
+            statement.setString(2, contrasena);
+            resultSet = statement.executeQuery();
+            
+            // Si es administrador fijo, retorna true
+            if (nombreUsuario.equals("admin") && contrasena.equals("password")) {
+                return true;
             }
-        } catch (SQLException e) {
-            System.out.println("Error al realizar el login: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (statement != null) {
-                    statement.close();
-                }
-                if (conexion != null) {
-                    conexion.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println("Error al cerrar la conexión: " + ex.getMessage());
-                ex.printStackTrace();
+            
+            // Si es un usuario normal registrado en la base de datos, retorna true
+            if (resultSet.next()) {
+                return true;
             }
         }
-        return false; // Si hubo algún problema durante el proceso, se retorna false por defecto
+    } catch (SQLException e) {
+        System.out.println("Error al realizar el login: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error al cerrar la conexión: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
+    return false; // Si hubo algún problema durante el proceso, se retorna false por defecto
+}
+
    // Método para obtener todas las PQRS con sus datos correspondientes, dándole prioridad a las de tipo "Petición"
     public List<PQRS> obtenerPQRS() throws SQLException {
         List<PQRS> pqrsList = new ArrayList<>();
@@ -243,6 +253,5 @@ public static void enviarCorreoRegistroExitoso(String destinatario, String prime
         e.printStackTrace();
     }
 }
-
 
 }

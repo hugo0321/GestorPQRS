@@ -7,12 +7,13 @@
 <%@ page import="java.io.*" %>
 
 <%
-    HttpSession miSesion = request.getSession(false);
-    if (miSesion != null && miSesion.getAttribute("username") != null) {
+    HttpSession misession = request.getSession(false);
+    if (misession != null && "admin".equals((String)misession.getAttribute("username"))) {
         response.sendRedirect("ListaPQRS.jsp");
         return;
     }
 %>
+
 
 <!DOCTYPE html>
 <html lang="en">

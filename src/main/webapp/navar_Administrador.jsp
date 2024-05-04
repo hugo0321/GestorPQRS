@@ -57,7 +57,7 @@
             var choice = confirm("Recuerda Cerrar Sesión ¿Quieres continuar o quieres quedarte?");
             if (choice == true) {
                 // El usuario eligió continuar
-                window.location.href = "index.jsp"; // Página de inicio
+                window.location.href = "indexEntrada.jsp"; // Página de inicio
             } else  {
                 // El usuario eligió quedarse
                 

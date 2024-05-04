@@ -9,6 +9,7 @@ package Servlets;
 
 import com.mycompany.tutorial.ConexionBaseDeDatos;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,23 +23,54 @@ public class LoginServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html");
-        String nombreUsuario = request.getParameter("usuario");
-        String contrasena = request.getParameter("contrasena");
+        String origen = request.getHeader("Referer"); // Obtiene la URL de la página de origen
 
-        // Verificar las credenciales
-        boolean loginExitoso = ConexionBaseDeDatos.loginAdmin(nombreUsuario, contrasena);
+        // Verifica que la solicitud provenga del formulario de login.jsp
+        if (origen != null && origen.endsWith("login.jsp")) {
+            response.setContentType("text/html");
+            String nombreUsuario = request.getParameter("usuario");
+            String contrasena = request.getParameter("contrasena");
 
-        if (loginExitoso) {
-            // Crear sesión y almacenar el nombre de usuario
-            HttpSession miSesion = request.getSession();
-            miSesion.setAttribute("username", nombreUsuario);
-            // Redirigir a la página ListaPQRS.jsp
-            response.sendRedirect("ListaPQRS.jsp");
+            // Verificar las credenciales
+            boolean loginExitoso = ConexionBaseDeDatos.login(nombreUsuario, contrasena);
+
+            if (loginExitoso && nombreUsuario.equals("admin") && contrasena.equals("password")) {
+                // Si es el administrador fijo, redirige a ListaPQRS.jsp
+                HttpSession miSesion = request.getSession();
+                miSesion.setAttribute("username", nombreUsuario);
+                response.sendRedirect("ListaPQRS.jsp");
+            } else if (loginExitoso && !nombreUsuario.equals("admin")) {
+                // Si las credenciales son de un usuario normal registrado, redirige a indexEntrada.jsp
+                HttpSession miSesion = request.getSession();
+                miSesion.setAttribute("username", nombreUsuario);
+                response.sendRedirect("indexEntrada.jsp");
+            } else {
+                // Si las credenciales son incorrectas, redirige a login.jsp con un mensaje de error
+                 String mensaje = "Usuario o contraseña incorrectos";
+                response.setContentType("text/html;charset=UTF-8");
+                PrintWriter out = response.getWriter();
+                out.println("<script type=\"text/javascript\">");
+                out.println("alert('" + mensaje + "');");
+                out.println("setTimeout(function(){window.location.href='login.jsp';}, 1000);");
+                out.println("</script>");
+            }
         } else {
-            response.sendRedirect("login.jsp?error=true");
+            // Si la solicitud no proviene del formulario de login.jsp pero el usuario no es el administrador
+            // y se encuentra registrado en la base de datos, redirige a indexEntrada.jsp
+            String nombreUsuario = request.getParameter("usuario");
+            String contrasena = request.getParameter("contrasena");
+            boolean loginExitoso = ConexionBaseDeDatos.login(nombreUsuario, contrasena);
+            if (loginExitoso && !nombreUsuario.equals("admin")) {
+                HttpSession miSesion = request.getSession();
+                miSesion.setAttribute("username", nombreUsuario);
+                response.sendRedirect("indexEntrada.jsp");
+            } else {
+                // Si la solicitud no proviene de login.jsp y el usuario no está registrado, redirige a index.jsp
+                response.sendRedirect("index.jsp");
+            }
         }
-    }
+    }  
 }
+
 
 

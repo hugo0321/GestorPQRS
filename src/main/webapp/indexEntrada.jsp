@@ -1,17 +1,18 @@
 <%-- 
-    Document   : indexEntrada
-    Created on : 3/05/2024, 8:03:44 p. m.
-    Author     : Hugo
---%>
-
-<%-- 
     Document   : index
     Created on : 1/05/2024, 9:23:45 p. m.
     Author     : Hugo
 --%>
 <%@page import="com.mycompany.tutorial.ConexionBaseDeDatos"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%
+    HttpSession miSesion = request.getSession(false);
+    if (miSesion == null || miSesion.getAttribute("username") == null) {
+        // Si no hay sesión o el nombre de usuario no está presente en la sesión, redirigir al formulario de inicio de sesión
+        response.sendRedirect("index.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -34,20 +35,44 @@
     </head>
     <body id="page-top">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
-            <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#page-top">Constructora</a>
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ms-auto my-2 my-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="#about">Acerca de nosotros</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#services">Servicios</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#contact">PQRS</a></li>
+<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+    <div class="container px-4 px-lg-5">
+        <a class="navbar-brand" href="#page-top">Constructora</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto my-2 my-lg-0">
+                <li class="nav-item"><a class="nav-link" href="#about">Acerca de nosotros</a></li>
+                <li class="nav-item"><a class="nav-link" href="#services">Servicios</a></li>
+                <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">PQRS</a></li>
+                <!-- Dropdown para el usuario -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <% 
+                            // Obtener la sesión
+                            HttpSession laSesion = request.getSession(false);
+                            if (laSesion != null && laSesion.getAttribute("username") != null) {
+                                // Obtener el nombre de usuario de la sesión
+                                String username = (String) laSesion.getAttribute("username");
+                        %>
+                            Bienvenido, <%= username %>!
+                        <% } else { %>
+                            No se ha iniciado sesión
+                        <% } %>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#">Perfil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="svCerrarSesionUsuario ">Cerrar sesión</a></li>
                     </ul>
-                </div>
-            </div>
-        </nav>
+                </li>
+                <!-- Fin del Dropdown -->
+            </ul>
+        </div>
+    </div>
+</nav>
+
+      
        <!-- Encabezado -->
 <header class="masthead">
     <div class="container px-4 px-lg-5 h-100">
@@ -186,19 +211,154 @@
                         <p class="text-muted mb-5">Realiza tu PQRS te responderemos lo antes posible!</p>
                     </div>
                 </div>
+                
+                <div class="row gx-4 gx-lg-5 justify-content-center mb-5">
+                    <div class="col-lg-6">
+                        <!-- * * * * * * * * * * * * * * *-->
+                        <!-- * * SB Forms Contact Form * *-->
+                        <!-- * * * * * * * * * * * * * * *-->
+                        <!-- This form is pre-integrated with SB Forms.-->
+                        <!-- To make this form functional, sign up at-->
+                        <!-- https://startbootstrap.com/solution/contact-forms-->
+                        <!-- to get an API token!-->
+        <form id="contactForm" action="InsertarPQRSServlet" method="post" enctype="multipart/form-data" onsubmit="return validarFormulario()">
 
+    <!-- Primer Nombre input -->
+    <div class="form-floating mb-3">
+        <input class="form-control required" id="primerNombre" type="text" placeholder="Enter your name..." name="primerNombre" />
+        <label for="primerNombre">Primer nombre</label>
+    </div>
+    
+    <!-- Segundo Nombre input -->
+    <div class="form-floating mb-3">
+        <input class="form-control" id="segundoNombre" type="text" placeholder="Enter your name..." name="segundoNombre" />
+        <label for="segundoNombre">Segundo Nombre (Opcional)</label>
+    </div>
+    
+    <!-- Primer Apellido input -->
+    <div class="form-floating mb-3">
+        <input class="form-control required" id="primerApellido" type="text" placeholder="Enter your name..." name="primerApellido" />
+        <label for="primerApellido">Primer Apellido</label>
+    </div>
+    
+    <!-- Segundo Apellido input -->
+    <div class="form-floating mb-3">
+        <input class="form-control" id="segundoApellido" type="text" placeholder="Enter your name..." name="segundoApellido" />
+        <label for="segundoApellido">Segundo Apellido (Opcional)</label>
+    </div>
+    
+    <!-- Motivo select -->
+    <div class="form-floating mb-3">
+        <select class="form-select required" id="motivo" name="motivo">
+            <option value="">Selecciona un motivo...</option>
+            <option value="Peticion">Petición</option>
+            <option value="Queja">Queja</option>
+            <option value="Reclamo">Reclamo</option>
+            <option value="Sugerencia">Sugerencia</option>
+        </select>
+        <label for="motivo">Motivo</label>
+    </div>
+    
+    <!-- Email address input -->
+    <div class="form-floating mb-3">
+        <input class="form-control required" id="email" type="email" placeholder="name@example.com" name="email" />
+        <label for="email">Correo</label>
+    </div>
+    
+    <!-- Phone number input -->
+    <div class="form-floating mb-3">
+        <input class="form-control required" id="phone" type="tel" placeholder="(123) 456-7890" name="telefono" />
+        <label for="phone">Número de celular</label>
+    </div>
+    
+    <!-- Message input -->
+    <div class="form-floating mb-3">
+        <textarea class="form-control" id="message" type="text" placeholder="Enter your message here..." style="height: 10rem" name="mensaje"></textarea>
 
-<div id="LoginServlet">
-    <form action="LoginServlet" method="post">
-        <div class="mb-3">
-            <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuario">
-        </div>
-        <div class="mb-3">
-            <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Contraseña">
-        </div>
-        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-    </form>
-</div>
+        <label for="message">Mensaje</label>
+    </div>
+    
+    <!-- Campo de carga de archivo PDF -->
+    <div class="form-group mb-3">
+        <label for="pdfFile">Adjuntar PDF (máximo 20 MB)</label>
+        <input type="file" class="form-control-file" id="pdfFile" name="pdfFile" accept=".pdf" onchange="validarPDF(this)">
+        <small id="pdfHelp" class="form-text text-muted">Por favor, seleccione un archivo PDF de máximo 20 MB.</small>
+        <div id="pdfError" class="invalid-feedback">Solo se permiten archivos PDF.</div>
+    </div>
+    
+    <!-- Submit Button -->
+    <div class="d-grid">
+        <button class="btn btn-primary btn-xl" id="submitButton" type="submit">Enviar</button>
+    </div>
+
+</form>
+
+<script>
+    function validarFormulario() {
+        var inputs = document.querySelectorAll('.required');
+        var pdfFile = document.getElementById('pdfFile');
+        var message = document.getElementById('message').value.trim();
+
+        // Verificar si se proporciona un PDF o un mensaje
+        if (pdfFile.files.length === 0 && message === '') {
+            alert('Debe adjuntar un archivo PDF o completar el campo de mensaje.');
+            return false;
+        }
+
+        // Si se proporciona un PDF, verificar si es un archivo PDF válido
+        if (pdfFile.files.length > 0) {
+            var isValidPDF = validarPDF(pdfFile);
+            if (!isValidPDF) {
+                return false;
+            }
+        }
+
+        // Validar campos de texto requeridos
+        var valid = true;
+        inputs.forEach(function(input) {
+            if (input.value.trim() === '') {
+                input.classList.add('is-invalid');
+                valid = false;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        return valid;
+    }
+
+    function toggleRequiredAttribute() {
+        var pdfFile = document.getElementById('pdfFile');
+        var messageInput = document.getElementById('message');
+
+        // Si se selecciona un archivo PDF, el campo de mensaje no es obligatorio
+        if (pdfFile.files.length > 0) {
+            messageInput.removeAttribute('required');
+        } else {
+            messageInput.setAttribute('required', 'required');
+        }
+    }
+
+    // Validar PDF
+    function validarPDF(input) {
+        var file = input.files[0];
+        var fileSize = file.size / 1024 / 1024; // Tamaño en MB
+
+        if (file.type !== 'application/pdf') {
+            alert("El archivo seleccionado no es un PDF válido. Por favor, seleccione un archivo PDF.");
+            input.value = ''; // Limpiar el valor del input para que el usuario pueda seleccionar otro archivo
+            return false;
+        } else if (fileSize > 20) {
+            alert("El archivo seleccionado excede el tamaño máximo permitido (20 MB). Por favor, seleccione otro archivo.");
+            input.value = ''; // Limpiar el valor del input para que el usuario pueda seleccionar otro archivo
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    document.getElementById('pdfFile').addEventListener('change', toggleRequiredAttribute);
+</script>
 
 
 
