@@ -17,12 +17,17 @@
 <%
     // Verificar si hay una sesión activa y si el usuario es el administrador
     HttpSession misession = request.getSession(false);
-    if (misession == null || !"admin".equals((String)misession.getAttribute("username"))) {
-        // Si no hay sesión activa o si el usuario no es el administrador, redirigir a index.jsp
+    if (misession == null) {
+        // Si no hay sesión activa, redirigir a index.jsp
         response.sendRedirect("index.jsp");
+        return; // Terminar la ejecución de la página actual
+    } else if (!"admin".equals((String)misession.getAttribute("username"))) {
+        // Si el usuario no es el administrador, redirigir a indexEntrada.jsp
+        response.sendRedirect("indexEntrada.jsp");
         return; // Terminar la ejecución de la página actual
     }
 %>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

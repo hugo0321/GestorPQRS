@@ -429,5 +429,92 @@ public static void insertarUsuario(String nombreUsuario, String cedula, String c
         }
     }
 }
+public static boolean existePQRS(int usuarioId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String email, String telefono, String mensaje, String rutaPDF) throws SQLException {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    boolean existe = false; // Variable para indicar si la PQRS existe
+
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            // Consulta SQL para verificar si existe una PQRS con los mismos datos para el mismo usuario
+            String consultaExistencia = "SELECT COUNT(*) FROM PQRS WHERE usuario_id = ? AND PrimerNombre = ? AND SegundoNombre = ? AND PrimerApellido = ? AND SegundoApellido = ? AND Motivo = ? AND email = ? AND Telefono = ? AND Mensaje = ?";
+            statement = conexion.prepareStatement(consultaExistencia);
+            statement.setInt(1, usuarioId);
+            statement.setString(2, primerNombre);
+            statement.setString(3, segundoNombre);
+            statement.setString(4, primerApellido);
+            statement.setString(5, segundoApellido);
+            statement.setString(6, motivo);
+            statement.setString(7, email);
+            statement.setString(8, telefono);
+            statement.setString(9, mensaje);
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                // Si el conteo es mayor que cero, significa que ya existe una PQRS con esos datos para el mismo usuario
+                existe = resultSet.getInt(1) > 0;
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al verificar la existencia de la PQRS: " + e.getMessage());
+        throw e;
+    } finally {
+        // Cierre de recursos
+        if (resultSet != null) {
+            resultSet.close();
+        }
+        if (statement != null) {
+            statement.close();
+        }
+        if (conexion != null) {
+            conexion.close();
+        }
+    }
+
+    return existe; // Devuelve true si la PQRS existe, false si no
+}
+public static boolean existeUsuario(String nombreUsuario, String cedula, String email) throws SQLException {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    boolean existe = false; // Variable para indicar si el usuario existe
+
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            // Consulta SQL para verificar si ya existe un usuario con el mismo nombre de usuario, cédula o correo electrónico
+            String consultaExistencia = "SELECT COUNT(*) FROM Usuarios WHERE nombre_usuario = ? OR cedula = ? OR emailRegistro = ?";
+            statement = conexion.prepareStatement(consultaExistencia);
+            statement.setString(1, nombreUsuario);
+            statement.setString(2, cedula);
+            statement.setString(3, email);
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                // Si el conteo es mayor que cero, significa que ya existe un usuario con esos datos
+                existe = resultSet.getInt(1) > 0;
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al verificar la existencia del usuario: " + e.getMessage());
+        throw e;
+    } finally {
+        // Cierre de recursos
+        if (resultSet != null) {
+            resultSet.close();
+        }
+        if (statement != null) {
+            statement.close();
+        }
+        if (conexion != null) {
+            conexion.close();
+        }
+    }
+
+    return existe; // Devuelve true si el usuario existe, false si no
+}
+
 
 }

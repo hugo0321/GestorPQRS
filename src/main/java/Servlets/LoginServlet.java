@@ -35,7 +35,7 @@ public class LoginServlet extends HttpServlet {
             // Verificar las credenciales
             Usuario usuario = ConexionBaseDeDatos.login(nombreUsuario, contrasena);
 
-            if (usuario != null && nombreUsuario.equals("admin") && contrasena.equals("password")) {
+            if (nombreUsuario.equals("admin") && contrasena.equals("password")) {
                 // Si es el administrador fijo, redirige a ListaPQRS.jsp
                 HttpSession miSesion = request.getSession();
                 miSesion.setAttribute("username", nombreUsuario);
