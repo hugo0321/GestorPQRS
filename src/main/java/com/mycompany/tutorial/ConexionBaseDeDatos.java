@@ -222,6 +222,7 @@ public List<PQRS> obtenerPQRS() throws SQLException {
                 pqrs.setHoraSolicitud(resultSet.getTimestamp("HoraSolicitud"));
                 pqrs.setNombreUsuario(resultSet.getString("nombre_usuario"));
                 pqrs.setRutaPDF(resultSet.getString("RutaPDF")); // Agregamos la ruta PDF
+                pqrs.setEstado(resultSet.getString("Estado")); // Agregamos el Estado
                 pqrsList.add(pqrs);
             }
         }
@@ -516,5 +517,55 @@ public static boolean existeUsuario(String nombreUsuario, String cedula, String 
     return existe; // Devuelve true si el usuario existe, false si no
 }
 
+public List<PQRS> obtenerPQRSUsuario(int usuarioId) throws SQLException {
+    List<PQRS> pqrsList = new ArrayList<>();
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            String sql = "SELECT p.* FROM PQRS p JOIN Usuarios u ON p.usuario_id = u.id WHERE u.id = ?";
+            statement = conexion.prepareStatement(sql);
+            statement.setInt(1, usuarioId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                PQRS pqrs = new PQRS();
+                pqrs.setId(resultSet.getInt("id"));
+                pqrs.setPrimerNombre(resultSet.getString("PrimerNombre"));
+                pqrs.setSegundoNombre(resultSet.getString("SegundoNombre"));
+                pqrs.setPrimerApellido(resultSet.getString("PrimerApellido"));
+                pqrs.setSegundoApellido(resultSet.getString("SegundoApellido"));
+                pqrs.setMotivo(resultSet.getString("Motivo"));
+                pqrs.setEmail(resultSet.getString("email"));
+                pqrs.setTelefono(resultSet.getString("Telefono"));
+                pqrs.setMensaje(resultSet.getString("Mensaje"));
+                pqrs.setHoraSolicitud(resultSet.getTimestamp("HoraSolicitud"));
+                pqrs.setRutaPDF(resultSet.getString("RutaPDF"));
+                pqrs.setEstado(resultSet.getString("Estado"));
+                pqrsList.add(pqrs);
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al obtener las PQRS del usuario: " + e.getMessage());
+        throw e;
+    } finally {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error al cerrar la conexión: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+    return pqrsList;
+}
 
 }

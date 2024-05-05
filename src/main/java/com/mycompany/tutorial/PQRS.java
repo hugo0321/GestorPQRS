@@ -25,6 +25,7 @@ public class PQRS {
     private String rutaPDF; // Nuevo atributo
     private Timestamp horaSolicitud;
     private String nombreUsuario; // Nuevo atributo
+    private String estado; // Nuevo atributo
 
     // Constructor
     public PQRS() {
@@ -124,5 +125,12 @@ public class PQRS {
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
+    }
+      public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

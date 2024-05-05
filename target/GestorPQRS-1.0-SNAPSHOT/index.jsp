@@ -183,7 +183,7 @@
                     <div class="col-lg-8 col-xl-6 text-center">
                         <h2 class="mt-0">Ayudanos a mejorar</h2>
                         <hr class="divider" />
-                        <p class="text-muted mb-5">Realiza tu PQRS te responderemos lo antes posible!</p>
+                        <p class="text-muted mb-5">Inicie sesión o registrese para mandar sus PQRS!</p>
                     </div>
                 </div>
 
