@@ -20,40 +20,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #495057;
-        }
-        .container {
-            margin-top: 50px;
-        }
-        h1 {
-            color: #007bff;
-            margin-bottom: 30px;
-        }
-        table {
-            width: 100%;
-            background-color: #000;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            color: #fff; /* Cambio de color del texto a blanco */
-        }
-        th {
-            background-color: #007bff;
-            color: #fff;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .no-data {
-            font-style: italic;
-        }
-    </style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        color: #495057;
+    }
+    .container {
+        margin-top: 50px;
+    }
+    h1 {
+        color: #007bff;
+        margin-bottom: 30px;
+    }
+    /* Estilos para la tabla */
+    table {
+        width: 100%;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        color: #fff; /* Color del texto en las celdas */
+    }
+    th {
+        background-color: #007bff; /* Color de fondo para las celdas de encabezado */
+    }
+    tr:nth-child(even) {
+        background-color: #007bff; /* Cambia el color de fondo para las filas pares */
+    }
+    tr:nth-child(odd) {
+        background-color: #f2f2f2; /* Cambia el color de fondo para las filas impares */
+    }
+    .no-data {
+        font-style: italic;
+    }
+</style>
+
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -215,7 +224,8 @@
                     <td><%= pqrs.getMotivo() %></td>
                     <td><%= pqrs.getEmail() %></td>
                     <td><%= pqrs.getTelefono() %></td>
-                    <td><%= pqrs.getMensaje() %></td>
+                     <td><%= pqrs.getMensaje().length() > 50 ? pqrs.getMensaje().substring(0, 50) + "..." : pqrs.getMensaje() %><button class="btn btn-info btn-sm btn-ver-mensaje" data-mensaje="<%= pqrs.getMensaje() %>">Ver mensaje completo</button>
+                    </td> <!-- Mostrar solo los primeros 50 caracteres del mensaje -->
                     <td><%= pqrs.getHoraSolicitud() %></td>
                     <td><%= pqrs.getEstado() %></td>
                 </tr>
@@ -232,9 +242,27 @@
     </div>
 </div>
 
+<!-- Modal para mostrar el mensaje completo -->
+<div class="modal fade" id="mensajeCompletoModal" tabindex="-1" role="dialog" aria-labelledby="mensajeCompletoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mensajeCompletoModalLabel">Mensaje Completo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="mensajeCompletoModalContent"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- Footer-->
 <footer class="bg-light py-5">
-    <div class="container px-4 px-lg-5"><div class="small text-center text-muted">Copyright &copy; 2023 - Company Name</div></div>
+    <div class="container px-4 px-lg-5"><div class="small text-center text-muted">Copyright &copy; 2024 - Company HL</div></div>
 </footer>
 <!-- Bootstrap core JS-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -247,5 +275,12 @@
 <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+<script>
+    $('.btn-ver-mensaje').on('click', function() {
+        var mensajeCompleto = $(this).data('mensaje');
+        $('#mensajeCompletoModalContent').text(mensajeCompleto);
+        $('#mensajeCompletoModal').modal('show');
+    });
+</script>
 </body>
 </html>

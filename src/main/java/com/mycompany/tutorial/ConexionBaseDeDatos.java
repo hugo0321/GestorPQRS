@@ -567,5 +567,73 @@ public List<PQRS> obtenerPQRSUsuario(int usuarioId) throws SQLException {
     }
     return pqrsList;
 }
+public static void editarUsuario(int id, String nombreUsuario, String cedula, String emailRegistro) throws SQLException {
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        try {
+            conexion = getConexion();
+            if (conexion != null) {
+                String sql = "UPDATE Usuarios SET nombre_usuario = ?, cedula = ?, emailRegistro = ? WHERE id = ?";
+                statement = conexion.prepareStatement(sql);
+                statement.setString(1, nombreUsuario);
+                statement.setString(2, cedula);
+                statement.setString(3, emailRegistro);
+                statement.setInt(4, id);
+
+                int filasActualizadas = statement.executeUpdate();
+                if (filasActualizadas > 0) {
+                    System.out.println("Usuario actualizado correctamente.");
+                } else {
+                    System.out.println("No se pudo actualizar el usuario.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar el usuario: " + e.getMessage());
+            throw e;
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+        }
+    }
+public static void eliminarUsuario(int id) throws SQLException {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            // Eliminar todas las PQRS del usuario
+            String sqlEliminarPQRS = "DELETE FROM PQRS WHERE usuario_id = ?";
+            statement = conexion.prepareStatement(sqlEliminarPQRS);
+            statement.setInt(1, id);
+            int filasEliminadasPQRS = statement.executeUpdate();
+            System.out.println("Se han eliminado " + filasEliminadasPQRS + " PQRS asociadas al usuario.");
+
+            // Ahora eliminar al usuario
+            String sqlEliminarUsuario = "DELETE FROM Usuarios WHERE id = ?";
+            statement = conexion.prepareStatement(sqlEliminarUsuario);
+            statement.setInt(1, id);
+            int filasEliminadasUsuario = statement.executeUpdate();
+            if (filasEliminadasUsuario > 0) {
+                System.out.println("Usuario eliminado correctamente.");
+            } else {
+                System.out.println("No se pudo eliminar el usuario.");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al eliminar el usuario: " + e.getMessage());
+        throw e;
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (conexion != null) {
+            conexion.close();
+        }
+    }
+}
 
 }

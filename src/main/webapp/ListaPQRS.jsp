@@ -1,40 +1,37 @@
 <%-- 
     Document   : ListaPQRS
-    Created on : 2/05/2024, 11:58:19 a. m.
+    Created on : 2/05/2024, 11:58:19 a. m.
     Author     : Hugo
 --%>
-<%-- 
-    Document   : ListaPQRS
-    Created on : 2/05/2024, 11:58:19 a. m.
-    Author     : Hugo
---%>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<%@page import="com.mycompany.tutorial.PQRS"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="com.mycompany.tutorial.ConexionBaseDeDatos"%>
-<%@page import="java.util.List"%>
+<%@ page import="java.util.List" %>
+<%@ page import="com.mycompany.tutorial.PQRS" %>
+<%@ page import="com.mycompany.tutorial.ConexionBaseDeDatos" %>
+<%@ page import="javax.servlet.http.HttpSession" %>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+
 <%
-    // Verificar si hay una sesión activa y si el usuario es el administrador
     HttpSession misession = request.getSession(false);
     if (misession == null) {
-        // Si no hay sesión activa, redirigir a index.jsp
         response.sendRedirect("index.jsp");
-        return; // Terminar la ejecución de la página actual
+        return;
     } else if (!"admin".equals((String)misession.getAttribute("username"))) {
-        // Si el usuario no es el administrador, redirigir a indexEntrada.jsp
         response.sendRedirect("indexEntrada.jsp");
-        return; // Terminar la ejecución de la página actual
+        return;
     }
 %>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <jsp:include page="navar_Administrador.jsp" />
     <meta charset="UTF-8">
     <title>Listado de PQRS</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,12 +46,23 @@
             margin-bottom: 30px;
         }
         table {
-            width: 100%;
+            width: 95%; /* Cambia el valor a lo que desees */
+            max-width: 95%; /* Esto asegura que la tabla no sea más ancha que el 95% de la pantalla */
+            margin: 0 auto; /* Esto centra la tabla horizontalmente en la página */
             background-color: #fff;
         }
         th, td {
             padding: 12px;
             text-align: left;
+            white-space: nowrap; /* Esto evita que el texto se envuelva */
+            overflow: hidden; /* Esto oculta cualquier contenido que se desborde del ancho del td */
+            text-overflow: ellipsis; /* Esto añade puntos suspensivos (...) para indicar que hay más contenido oculto */
+        }
+        td.mensaje {
+            max-width: 300px; /* Ancho máximo de la columna */
+            white-space: nowrap; /* Evita que el texto se envuelva */
+            overflow: hidden; /* Oculta el texto que desborde del ancho de la columna */
+            text-overflow: ellipsis; /* Agrega puntos suspensivos (...) al final del texto truncado */
         }
         th {
             background-color: #007bff;
@@ -67,6 +75,35 @@
             font-style: italic;
         }
     </style>
+    <script>
+        $(document).ready(function() {
+            $(".btn-visualizar").click(function() {
+                var motivo = $(this).closest("tr").find(".motivo").text();
+                var email = $(this).closest("tr").find(".email").text();
+                var telefono = $(this).closest("tr").find(".telefono").text();
+                var mensaje = $(this).closest("tr").find(".mensaje").text();
+                var rutaPDF = $(this).closest("tr").find(".rutaPDF").text();
+                var horaSolicitud = $(this).closest("tr").find(".horaSolicitud").text();
+                var estado = $(this).closest("tr").find(".estado").text();
+                $("#view-motivo").val(motivo);
+                $("#view-email").val(email);
+                $("#view-telefono").val(telefono);
+                $("#view-mensaje").val(mensaje);
+                $("#view-rutaPDF").val(rutaPDF);
+                $("#view-horaSolicitud").val(horaSolicitud);
+                $("#view-estado").val(estado);
+                $("#visualizarPQRSModal").modal("show");
+            });
+
+            $("#expandir-mensaje").click(function() {
+                var mensajeCompleto = $("#view-mensaje").val();
+                $("#mensajeCompletoModal .modal-body").text(mensajeCompleto);
+                $("#mensajeCompletoModal").modal("show");
+            });
+
+            $(".draggable").draggable();
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -84,15 +121,18 @@
                         <th>Email</th>
                         <th>Teléfono</th>
                         <th>Mensaje</th>
-                        <th>Fecha/Hora</th>
+                        <th>rutaPDF</th>
+                        <th>Fecha/Hora</th>                 
+                        <th>Estado</th>
+                        <th>Acciones</th> <!-- Nueva columna para las acciones -->
                     </tr>
                 </thead>
                 <tbody>
                     <% 
-                    ConexionBaseDeDatos controlador = new ConexionBaseDeDatos();
-                    List<PQRS> listaPQRS = controlador.obtenerPQRS();
-                    if (listaPQRS != null && !listaPQRS.isEmpty()) {
-                        for (PQRS pqrs : listaPQRS) {
+                        ConexionBaseDeDatos controlador = new ConexionBaseDeDatos();
+                        List<PQRS> listaPQRS = controlador.obtenerPQRS();
+                        if (listaPQRS != null && !listaPQRS.isEmpty()) {
+                            for (PQRS pqrs : listaPQRS) {
                     %>
                     <tr>
                         <td><%= pqrs.getId() %></td>
@@ -100,15 +140,21 @@
                         <td><%= pqrs.getSegundoNombre() %></td>
                         <td><%= pqrs.getPrimerApellido() %></td>
                         <td><%= pqrs.getSegundoApellido() %></td>
-                        <td><%= pqrs.getMotivo() %></td>
-                        <td><%= pqrs.getEmail() %></td>
-                        <td><%= pqrs.getTelefono() %></td>
-                        <td><%= pqrs.getMensaje() %></td>
-                        <td><%= pqrs.getHoraSolicitud() %></td>
+                        <td class="motivo"><%= pqrs.getMotivo() %></td>
+                        <td class="email"><%= pqrs.getEmail() %></td>
+                        <td class="telefono"><%= pqrs.getTelefono() %></td>
+                        <td class="mensaje"><%= pqrs.getMensaje() %></td>
+                        <td class="rutaPDF"><%= pqrs.getRutaPDF() %></td>
+                        <td class="horaSolicitud"><%= pqrs.getHoraSolicitud() %></td>                 
+                        <td class="estado"><%= pqrs.getEstado() %></td>
+                        <td>
+                            <button class="btn btn-info btn-sm btn-visualizar">Visualizar</button>
+                            <button class="btn btn-danger btn-sm btn-eliminar" data-id="<%= pqrs.getId() %>">Eliminar</button>
+                        </td>
                     </tr>
                     <% 
-                        }
-                    } else {
+                            }
+                        } else {
                     %>
                     <tr>
                         <td colspan="10" class="no-data">No hay PQRS disponibles.</td>
@@ -118,6 +164,97 @@
             </table>
         </div>
     </div>
+
+    <!-- Modal para visualizar detalles de PQRS -->
+    <div class="modal fade" id="visualizarPQRSModal" tabindex="-1" role="dialog" aria-labelledby="visualizarPQRSModalLabel" aria-hidden="true">
+        <div class="modal-dialog draggable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="visualizarPQRSModalLabel">Detalles de la PQRS</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="view-motivo">Motivo</label>
+                        <input type="text" class="form-control" id="view-motivo" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-email">Email</label>
+                        <input type="email" class="form-control" id="view-email" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-telefono">Teléfono</label>
+                        <input type="text" class="form-control" id="view-telefono" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-mensaje">Mensaje</label>
+                        <textarea class="form-control" id="view-mensaje" readonly></textarea>
+                        <span id="expandir-mensaje" class="expandir-mensaje" style="color: blue; cursor: pointer;">(Expandir)</span>
+                    </div>
+          <!-- Agrega un botón dentro del modal para copiar la ruta del PDF -->
+<div class="form-group">
+    <label for="view-rutaPDF">Ruta PDF</label>
+    <div class="input-group">
+        <input type="text" class="form-control" id="view-rutaPDF" readonly>
+        <div class="input-group-append">
+            <button class="btn btn-primary btn-copiar" type="button">Copiar</button>
+        </div>
+    </div>
+</div>
+                    <div class="form-group">
+                        <label for="view-horaSolicitud">Fecha/Hora</label>
+                        <input type="text" class="form-control" id="view-horaSolicitud" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-estado">Estado</label>
+                        <input type="text" class="form-control" id="view-estado" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para mostrar el mensaje completo -->
+    <div class="modal fade" id="mensajeCompletoModal" tabindex="-1" role="dialog" aria-labelledby="mensajeCompletoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mensajeCompletoModalLabel">Mensaje Completo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Aquí se mostrará el mensaje completo -->
+                </div>
+            </div>
+        </div>
+    </div>
+   <!-- Script para copiar la ruta del PDF al portapapeles -->
+<!-- Script para copiar la ruta del PDF al portapapeles -->
+<script>
+    $(document).ready(function() {
+        // Función para copiar la ruta del PDF al portapapeles
+        $('.btn-copiar').click(function() {
+            // Seleccionar el campo de texto que contiene la ruta del PDF
+            var rutaPDF = $('#view-rutaPDF');
+            rutaPDF.select();
+            
+            // Intentar copiar el contenido del campo de texto al portapapeles
+            navigator.clipboard.writeText(rutaPDF.val())
+                .then(function() {
+                    // Mostrar un mensaje de éxito
+                    alert('La ruta del PDF se ha copiado al portapapeles: ' + rutaPDF.val());
+                })
+                .catch(function(err) {
+                    console.error('Error al copiar al portapapeles: ', err);
+                    alert('Hubo un error al copiar la ruta del PDF al portapapeles.');
+                });
+        });
+    });
+</script>
+
 </body>
 </html>
-
