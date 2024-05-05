@@ -335,7 +335,7 @@ public static void enviarRegistroExitoso(String destinatario, String NombreUsuar
 
         // Construir el texto del mensaje con los datos del formulario
         String textoMensaje = "Estimado/a,\n\nsu Usuario ha sido registrado en el sistema.\n\n";
-        textoMensaje += "<h2>Detalles de la PQRS:</h2>\n";
+        textoMensaje += "<h2>Detalles de su cuenta:</h2>\n";
         textoMensaje += "<p><strong>Usuario:</strong> " + NombreUsuario + "</p>\n";
         textoMensaje += "<p><strong>Contraseña:</strong> " + contrasena + "</p>\n";
         textoMensaje += "<p><strong>email:</strong> " + email + "</p>\n";
