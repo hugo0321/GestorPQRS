@@ -104,7 +104,7 @@ public class ConexionBaseDeDatos {
         }
     }
 }
-
+ 
 
 
  public static Usuario login(String nombreUsuario, String contrasena) {
@@ -305,6 +305,59 @@ public static void enviarCorreoRegistroExitoso(String destinatario, String prime
         e.printStackTrace();
     }
 }
+public static void responderPQRS(String destinatario, String motivo, String mensajeRespuesta) {
+        // Configuración del servidor de correo
+        String correoRemitente = "gestorpqrs2@gmail.com";
+        String passwordRemitente = "h g x n n j x w n w c b a d k i";
+        String host = "smtp.gmail.com";
+        int puerto = 587;
+
+        // Propiedades de la sesión
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.port", puerto);
+
+        // Autenticación
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(correoRemitente, passwordRemitente);
+            }
+        });
+
+        try {
+            // Crear mensaje
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(correoRemitente));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+            message.setSubject("Respuesta a su PQRS - Motivo: " + motivo);
+
+            // Construir el texto del mensaje con la respuesta en formato HTML
+            String htmlContent = "<html><body style=\"font-family: Arial, sans-serif;\">"
+                    + "<p>Estimado(a) " + destinatario + ",</p>"
+                    + "<p>Reciba un cordial saludo.</p>"
+                    + "<p>Le agradecemos por su comunicación y nos complace brindarle una respuesta oportuna.</p>"
+                    + "<p>Respecto al motivo de su PQRS relacionado con '<strong>" + motivo + "</strong>',</p>"
+                    + "<p>" + mensajeRespuesta + "</p>"
+                    + "<p>Si necesita más asistencia, no dude en ponerse en contacto con nosotros.</p>"
+                    + "<p>Atentamente,<br/>Administrador</p>"
+                    + "</body></html>";
+
+            // Agregar el contenido del mensaje en formato HTML
+            message.setContent(htmlContent, "text/html; charset=utf-8");
+
+            // Enviar correo
+            Transport.send(message);
+
+            System.out.println("Respuesta a PQRS enviada exitosamente a: " + destinatario);
+        } catch (MessagingException e) {
+            System.out.println("Error al enviar la respuesta a la PQRS: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
 public static void enviarRegistroExitoso(String destinatario, String NombreUsuario, String Cedula, String contrasena, String email) {
     // Configuración del servidor de correo
     String correoRemitente = "gestorpqrs2@gmail.com";
@@ -635,5 +688,81 @@ public static void eliminarUsuario(int id) throws SQLException {
         }
     }
 }
+
+public void cambiarEstadoPQRS(int idPQRS, String nuevoEstado) throws SQLException {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            // Consulta SQL para actualizar el estado de la PQRS
+            String sql = "UPDATE PQRS SET Estado = ? WHERE id = ?";
+            statement = conexion.prepareStatement(sql);
+            statement.setString(1, nuevoEstado);
+            statement.setInt(2, idPQRS);
+
+            int filasActualizadas = statement.executeUpdate();
+            if (filasActualizadas > 0) {
+                System.out.println("Estado de PQRS actualizado correctamente.");
+            } else {
+                System.out.println("No se pudo actualizar el estado de la PQRS.");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al cambiar el estado de la PQRS: " + e.getMessage());
+        throw e;
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (conexion != null) {
+            conexion.close();
+        }
+    }
+}
+public int obtenerIdPQRS(String motivo, String emailUsuario) throws SQLException {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    int idPQRS = -1; // Valor predeterminado en caso de que no se encuentre ninguna PQRS
+
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            // Consulta SQL para obtener el ID de la PQRS con el motivo y el correo electrónico especificados
+            String consulta = "SELECT id FROM PQRS WHERE Motivo = ? AND email = ?";
+            statement = conexion.prepareStatement(consulta);
+            statement.setString(1, motivo);
+            statement.setString(2, emailUsuario);
+
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                idPQRS = resultSet.getInt("id");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al obtener el ID de la PQRS: " + e.getMessage());
+        throw e;
+    } finally {
+        // Cierre de recursos
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error al cerrar la conexión: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    return idPQRS;
+}
+
 
 }

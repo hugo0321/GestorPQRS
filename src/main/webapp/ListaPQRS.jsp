@@ -74,6 +74,7 @@
         .no-data {
             font-style: italic;
         }
+        
     </style>
     <script>
         $(document).ready(function() {
@@ -103,6 +104,7 @@
 
             $(".draggable").draggable();
         });
+        
     </script>
 </head>
 <body>
@@ -148,8 +150,15 @@
                         <td class="horaSolicitud"><%= pqrs.getHoraSolicitud() %></td>                 
                         <td class="estado"><%= pqrs.getEstado() %></td>
                         <td>
-                            <button class="btn btn-info btn-sm btn-visualizar">Visualizar</button>
-                            <button class="btn btn-danger btn-sm btn-eliminar" data-id="<%= pqrs.getId() %>">Eliminar</button>
+    <button type="button" class="btn btn-info btn-sm btn-visualizar">Visualizar</button>
+<button type="button" class="btn btn-danger btn-sm btn-eliminar" data-id="<%= pqrs.getId() %>">Eliminar</button>
+<button type="button" class="btn btn-success btn-sm btn-responder" data-toggle="modal" data-target="#responderPQRSModal" data-email="<%= pqrs.getEmail() %>" data-motivo="<%= pqrs.getMotivo() %>">
+    Responder
+</button>
+
+
+
+
                         </td>
                     </tr>
                     <% 
@@ -211,10 +220,60 @@
                         <label for="view-estado">Estado</label>
                         <input type="text" class="form-control" id="view-estado" readonly>
                     </div>
+          
+
+
+
                 </div>
             </div>
         </div>
     </div>
+    <!-- Script para prellenar los campos de destinatario y motivo -->
+<script>
+    $(document).ready(function() {
+        $(".btn-responder").click(function() {
+            var email = $(this).closest("tr").find(".email").text();
+            var motivo = $(this).closest("tr").find(".motivo").text();
+            $("#destinatario").val(email);
+            $("#motivo").val(motivo);
+            $("#responderPQRSModal").modal("show");
+        });
+    });
+</script>
+<!-- Modal para responder a la PQRS -->
+<div class="modal fade" id="responderPQRSModal" tabindex="-1" role="dialog" aria-labelledby="responderPQRSModalLabel" aria-hidden="true">
+    <div class="modal-dialog draggable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="responderPQRSModalLabel">Responder a la PQRS</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para escribir la respuesta -->
+                <form id="responderForm" action="ResponderPQRSServlet" method="post">
+                    <div class="form-group">
+                        <label for="destinatario">Destinatario:</label>
+                        <input type="email" class="form-control" id="destinatario" name="destinatario" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="motivo">Motivo:</label>
+                        <input type="text" class="form-control" id="motivo" name="motivo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mensajeRespuesta">Mensaje de respuesta:</label>
+                        <textarea class="form-control" id="mensajeRespuesta" name="mensajeRespuesta" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar respuesta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
     <!-- Modal para mostrar el mensaje completo -->
     <div class="modal fade" id="mensajeCompletoModal" tabindex="-1" role="dialog" aria-labelledby="mensajeCompletoModalLabel" aria-hidden="true">

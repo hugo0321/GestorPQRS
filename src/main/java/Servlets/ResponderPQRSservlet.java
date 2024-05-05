@@ -1,0 +1,78 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
+package Servlets;
+
+import com.mycompany.tutorial.ConexionBaseDeDatos;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+
+@WebServlet(name = "ResponderPQRSServlet", urlPatterns = {"/ResponderPQRSServlet"})
+public class ResponderPQRSservlet extends HttpServlet {
+
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            // Procesar los datos del formulario de respuesta a PQRS
+            String destinatario = request.getParameter("destinatario");
+            String motivo = request.getParameter("motivo");
+            String mensajeRespuesta = request.getParameter("mensajeRespuesta");
+
+            // Llamar al método para responder PQRS y cambiar el estado
+            boolean respuestaEnviada = responderPQRS(destinatario, motivo, mensajeRespuesta);
+            if (respuestaEnviada) {
+                // Actualizar el estado de la PQRS a "Respondida"
+                actualizarEstadoPQRS(destinatario, motivo);
+                
+                // Redirigir a listarPQRS.jsp con un mensaje de confirmación
+                String mensajeConfirmacion = "La respuesta se envió correctamente.";
+                request.setAttribute("mensajeConfirmacion", mensajeConfirmacion);
+                request.getRequestDispatcher("ListaPQRS.jsp").forward(request, response);
+            } else {
+                out.println("Error al enviar la respuesta.");
+            }
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    public static boolean responderPQRS(String destinatario, String motivo, String mensajeRespuesta) {
+        // Llama al método responderPQRS de la otra clase
+        ConexionBaseDeDatos.responderPQRS(destinatario, motivo, mensajeRespuesta);
+        // Aquí podrías agregar lógica adicional, como verificar si se envió la respuesta correctamente
+        return true; // En este ejemplo, siempre asumimos que la respuesta se envió correctamente
+    }
+    
+    public static void actualizarEstadoPQRS(String destinatario, String motivo) {
+        // Obtener el ID de la PQRS
+        try {
+            ConexionBaseDeDatos baseDeDatos = new ConexionBaseDeDatos();
+            int idPQRS = baseDeDatos.obtenerIdPQRS(motivo, destinatario);
+            
+            // Cambiar el estado de la PQRS a "Respondida"
+            baseDeDatos.cambiarEstadoPQRS(idPQRS, "Respondida");
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar el estado de la PQRS: " + e.getMessage());
+        }
+    }
+}

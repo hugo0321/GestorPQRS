@@ -41,22 +41,24 @@
         margin-bottom: 30px;
     }
     /* Estilos para la tabla */
-    table {
+      table {
         width: 100%;
+        background-color: #000; /* Cambia el color de fondo de la tabla a negro */
+        color: #fff; /* Cambia el color del texto en la tabla a blanco */
     }
     th, td {
         padding: 12px;
         text-align: left;
-        color: #fff; /* Color del texto en las celdas */
+        color: #fff
     }
     th {
         background-color: #007bff; /* Color de fondo para las celdas de encabezado */
     }
     tr:nth-child(even) {
-        background-color: #007bff; /* Cambia el color de fondo para las filas pares */
+        background-color: #111; /* Cambia el color de fondo para las filas pares */
     }
     tr:nth-child(odd) {
-        background-color: #f2f2f2; /* Cambia el color de fondo para las filas impares */
+        background-color: #222; /* Cambia el color de fondo para las filas impares */
     }
     .no-data {
         font-style: italic;
@@ -224,8 +226,13 @@
                     <td><%= pqrs.getMotivo() %></td>
                     <td><%= pqrs.getEmail() %></td>
                     <td><%= pqrs.getTelefono() %></td>
-                     <td><%= pqrs.getMensaje().length() > 50 ? pqrs.getMensaje().substring(0, 50) + "..." : pqrs.getMensaje() %><button class="btn btn-info btn-sm btn-ver-mensaje" data-mensaje="<%= pqrs.getMensaje() %>">Ver mensaje completo</button>
-                    </td> <!-- Mostrar solo los primeros 50 caracteres del mensaje -->
+                   <td>
+    <% if (pqrs.getMensaje() != null) { %>
+        <%= pqrs.getMensaje().length() > 50 ? pqrs.getMensaje().substring(0, 50) + "..." : pqrs.getMensaje() %>
+        <button class="btn btn-info btn-sm btn-ver-mensaje" data-mensaje="<%= pqrs.getMensaje() %>">Ver mensaje completo</button>
+    <% } %>
+</td> <!-- Mostrar solo los primeros 50 caracteres del mensaje si no es null -->
+
                     <td><%= pqrs.getHoraSolicitud() %></td>
                     <td><%= pqrs.getEstado() %></td>
                 </tr>
