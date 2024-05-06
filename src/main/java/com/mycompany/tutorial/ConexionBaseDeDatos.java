@@ -11,30 +11,26 @@ package com.mycompany.tutorial;
  */
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
-import javax.mail.*;
-import javax.mail.internet.*;
-import java.util.Properties;
 
 /**
  *
  * @author Hugo
  */
 public class ConexionBaseDeDatos {
-     private static final String URL = "jdbc:mysql://localhost:3306/GestorDePQRS";
+
+    private static final String URL = "jdbc:mysql://localhost:3306/GestorDePQRS";
     private static final String USUARIO = "root";
     private static final String PASSWORD = "000000";
-/**
- * Obtiene una conexión a la base de datos.
- * 
- * @return Una instancia de Connection que representa la conexión establecida.
- * @throws SQLException Si ocurre un error durante la conexión a la base de datos.
- */
+
+    /**
+     * Obtiene una conexión a la base de datos.
+     *
+     * @return Una instancia de Connection que representa la conexión
+     * establecida.
+     * @throws SQLException Si ocurre un error durante la conexión a la base de
+     * datos.
+     */
     public static Connection getConexion() throws SQLException {
         Connection conexion = null;
         try {

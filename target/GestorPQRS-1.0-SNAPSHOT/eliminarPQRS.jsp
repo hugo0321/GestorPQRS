@@ -13,12 +13,12 @@
 <%
     // Obtener el ID de la PQRS desde los datos enviados por el botón
     int idPQRS = Integer.parseInt(request.getParameter("idPQRS"));
-    
+
     // Intentar eliminar la PQRS con el ID especificado
     try {
         ControladorPQRS controlador = new ControladorPQRS(); // Instancia del controlador
         controlador.eliminarPQRS(idPQRS); // Llamada al método eliminarPQRS
-        
+
         // Redireccionar a ListaPQRS.jsp después de eliminar la PQRS
         response.sendRedirect("ListaPQRS.jsp");
     } catch (SQLException e) {
