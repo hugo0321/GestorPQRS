@@ -7,6 +7,7 @@ com\mycompany\tutorial\resources\JakartaEE8Resource.class
 com\mycompany\tutorial\ControladorEmails$1.class
 Servlets\EditarUsuarioServlet.class
 Servlets\InsertarPQRSServlet.class
+com\mycompany\tutorial\ControladorEmails$4.class
 Servlets\svCerrarSesionUsuario.class
 com\mycompany\tutorial\ControladorEmails$3.class
 com\mycompany\tutorial\Usuario.class
@@ -14,6 +15,7 @@ com\mycompany\tutorial\ControladorUsuarios.class
 com\mycompany\tutorial\PQRS.class
 com\mycompany\tutorial\ConexionBaseDeDatos.class
 Servlets\EliminarUsuarioServlet.class
+Servlets\RecuperarUsuarioServlet.class
 com\mycompany\tutorial\ControladorPQRS.class
 Servlets\LoginServlet.class
 com\mycompany\tutorial\JakartaRestConfiguration.class

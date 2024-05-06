@@ -396,4 +396,61 @@ public class ControladorUsuarios {
         }
     }
 }
+    /**
+     * Recupera un usuario basado en la coincidencia de la cédula y el correo electrónico proporcionados.
+     *
+     * @param cedula Cédula del usuario.
+     * @param correo Correo electrónico del usuario.
+     * @return Objeto Usuario si la coincidencia es encontrada, o null si no lo es.
+     * @throws SQLException Si ocurre un error de SQL durante la búsqueda.
+     */
+    public static Usuario recuperarUsuario(String cedula, String correo) throws SQLException {
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Usuario usuario = null; // Inicializamos el usuario como null
+        
+        try {
+            conexion = ConexionBaseDeDatos.getConexion();
+            if (conexion != null) {
+                String sql = "SELECT * FROM Usuarios WHERE cedula = ? AND emailRegistro = ?";
+                statement = conexion.prepareStatement(sql);
+                statement.setString(1, cedula);
+                statement.setString(2, correo);
+                resultSet = statement.executeQuery();
+                System.out.println("Consulta SQL: " + sql);
+
+                if (resultSet.next()) {
+                    // Si se encuentra una coincidencia, se crea un objeto Usuario con los datos correspondientes
+                    usuario = new Usuario();
+                    usuario.setId(resultSet.getInt("id"));
+                    usuario.setNombreUsuario(resultSet.getString("nombre_usuario"));
+                    usuario.setCedula(resultSet.getString("cedula"));
+                    usuario.setContrasena(resultSet.getString("contrasena"));
+                    usuario.setEmailRegistro(resultSet.getString("emailRegistro"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al recuperar usuario: " + e.getMessage());
+            throw e; // Relanzamos la excepción para manejarla en el contexto superior
+        } finally {
+            // Cierre de recursos
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (conexion != null) {
+                    conexion.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error al cerrar la conexión: " + ex.getMessage());
+                throw ex; // Relanzamos la excepción para manejarla en el contexto superior
+            }
+        }
+        
+        return usuario; // Devuelve el objeto Usuario, que puede ser null si no se encuentra coincidencia
+    }
 }

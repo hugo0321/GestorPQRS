@@ -31,6 +31,19 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <style>
+            .btn-recuperar {
+    background-color: #ffcccc; /* Color rojo suave */
+    color: #ffffff; /* Texto blanco */
+    border-color: #ffcccc; /* Borde rojo suave */
+}
+
+.btn-recuperar:hover {
+    background-color: #ff9999; /* Color rojo suave al pasar el ratón */
+    border-color: #ff9999; /* Borde rojo suave al pasar el ratón */
+}
+
+        </style>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -199,8 +212,75 @@
         <button type="submit" class="btn btn-primary">Iniciar sesión</button>
               <!-- Botón para abrir la ventana flotante de registro -->
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registroModal">Crear cuenta</button>
+        <!-- Botón para abrir la ventana flotante de recuperación de contraseña o usuario -->
+<button type="button" class="btn btn-recuperar" data-bs-toggle="modal" data-bs-target="#recuperarModal">Recuperar contraseña o usuario</button>
+
     </form>
 </div>
+                <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cedulaInput = document.getElementById('cedulaRecuperar');
+        const correoInput = document.getElementById('correoRecuperar');
+
+
+
+        // Acción del botón Recuperar
+        document.querySelector('#recuperarModal button.btn-primary').addEventListener('click', function () {
+            // Validar que la cédula solo contenga números
+            if (!/^[0-9]+$/.test(cedulaInput.value)) {
+                cedulaInput.classList.add('is-invalid');
+                return;
+            } else {
+                cedulaInput.classList.remove('is-invalid');
+            }
+
+            // Validar el correo electrónico
+            if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(correoInput.value)) {
+                correoInput.classList.add('is-invalid');
+                return;
+            } else {
+                correoInput.classList.remove('is-invalid');
+            }
+
+            // Aquí puedes agregar la lógica para recuperar la contraseña o usuario
+            // Por ejemplo, puedes enviar una solicitud AJAX al servidor
+        });
+    });
+</script>
+<!-- Modal para recuperar contraseña o usuario -->
+<div class="modal fade" id="recuperarModal" tabindex="-1" aria-labelledby="recuperarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="recuperarModalLabel">Recuperar contraseña o usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="RecuperarUsuarioServlet">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="cedulaRecuperar" name="cedulaRecuperar" placeholder="Cédula" required pattern="[0-9]{1,12}">
+                        <div class="invalid-feedback">La cédula debe ser un número de hasta 12 dígitos.</div>
+                    </div>
+                    <div class="mb-3">
+                        <input type="email" class="form-control" id="correoRecuperar" name="correoRecuperar" placeholder="Correo electrónico" required>
+                        <div class="invalid-feedback">Por favor, introduce un correo electrónico válido.</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Recuperar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
 
 <!-- Ventana flotante de registro -->
 <div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="registroModalLabel" aria-hidden="true">
