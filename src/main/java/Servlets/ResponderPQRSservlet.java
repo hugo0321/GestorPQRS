@@ -29,13 +29,17 @@ public class ResponderPQRSservlet extends HttpServlet {
             String email = request.getParameter("destinatario");
             String mensajeRespuesta = request.getParameter("mensajeRespuesta");
             int id = Integer.parseInt(request.getParameter("id"));
-
+            // Convertir a mayúsculas
+            primerNombre = primerNombre.toUpperCase();
+            primerApellido = primerApellido.toUpperCase();
+            // Verifica si los datos se estan obteniendo correctamente en mayúsculas
+            System.out.println("primerApellido" + primerApellido + "primerNombre" + primerNombre);
             // Llamar al método para responder PQRS y cambiar el estado
-            boolean respuestaEnviada = responderPQRS(email, motivo, mensajeRespuesta,primerNombre, primerApellido);
+            boolean respuestaEnviada = responderPQRS(email, motivo, mensajeRespuesta, primerNombre, primerApellido);
             if (respuestaEnviada) {
                 // Actualizar el estado de la PQRS a "Respondida"
                 actualizarEstadoPQRS(id, "Respondida");
-                
+
                 // Redirigir a listarPQRS.jsp con un mensaje de confirmación
                 String mensajeConfirmacion = "La respuesta se envió correctamente.";
                 request.setAttribute("mensajeConfirmacion", mensajeConfirmacion);
@@ -68,10 +72,9 @@ public class ResponderPQRSservlet extends HttpServlet {
         // Aquí podrías agregar lógica adicional, como verificar si se envió la respuesta correctamente
         return true; // En este ejemplo, siempre asumimos que la respuesta se envió correctamente
     }
-    
+
     public static void actualizarEstadoPQRS(int idPQRS, String nuevoEstado) throws SQLException {
         ControladorPQRS baseDeDatos = new ControladorPQRS();
         baseDeDatos.cambiarEstadoPQRS(idPQRS, nuevoEstado);
     }
 }
-
