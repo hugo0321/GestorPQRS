@@ -3,6 +3,7 @@
     Created on : 2/05/2024, 11:58:19 a. m.
     Author     : Hugo
 --%>
+<%@page import="com.mycompany.tutorial.ControladorPQRS"%>
 <%@ page import="java.util.List" %>
 <%@ page import="com.mycompany.tutorial.PQRS" %>
 <%@ page import="com.mycompany.tutorial.ConexionBaseDeDatos" %>
@@ -131,7 +132,7 @@
                 </thead>
                 <tbody>
                     <% 
-                        ConexionBaseDeDatos controlador = new ConexionBaseDeDatos();
+                        ControladorPQRS controlador = new ControladorPQRS();
                         List<PQRS> listaPQRS = controlador.obtenerPQRS();
                         if (listaPQRS != null && !listaPQRS.isEmpty()) {
                             for (PQRS pqrs : listaPQRS) {

@@ -3,11 +3,14 @@ C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\Servlets\svCerrarSesion
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\com\mycompany\tutorial\resources\JakartaEE8Resource.java
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\com\mycompany\tutorial\Usuario.java
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\Servlets\LoginServlet.java
+C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\com\mycompany\tutorial\ControladorPQRS.java
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\Servlets\RegistroServlet.java
+C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\com\mycompany\tutorial\ControladorUsuarios.java
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\Servlets\ControlAccesoServlet.java
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\Servlets\InsertarPQRSServlet.java
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\com\mycompany\tutorial\JakartaRestConfiguration.java
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\Servlets\EditarUsuarioServlet.java
+C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\com\mycompany\tutorial\ControladorEmails.java
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\Servlets\CerrarSesionServlet.java
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\Servlets\ResponderPQRSservlet.java
 C:\Estructuras de datos 2\PQRS\SistemaPQRS\src\main\java\com\mycompany\tutorial\ConexionBaseDeDatos.java

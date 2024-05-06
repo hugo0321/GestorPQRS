@@ -5,6 +5,8 @@
 package Servlets;
 
 import com.mycompany.tutorial.ConexionBaseDeDatos;
+import com.mycompany.tutorial.ControladorEmails;
+import com.mycompany.tutorial.ControladorPQRS;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -58,7 +60,7 @@ public class ResponderPQRSservlet extends HttpServlet {
 
     public static boolean responderPQRS(String destinatario, String motivo, String mensajeRespuesta) {
         // Llama al método responderPQRS de la otra clase
-        ConexionBaseDeDatos.responderPQRS(destinatario, motivo, mensajeRespuesta);
+        ControladorEmails.responderPQRS(destinatario, motivo, mensajeRespuesta);
         // Aquí podrías agregar lógica adicional, como verificar si se envió la respuesta correctamente
         return true; // En este ejemplo, siempre asumimos que la respuesta se envió correctamente
     }
@@ -66,7 +68,7 @@ public class ResponderPQRSservlet extends HttpServlet {
     public static void actualizarEstadoPQRS(String destinatario, String motivo) {
         // Obtener el ID de la PQRS
         try {
-            ConexionBaseDeDatos baseDeDatos = new ConexionBaseDeDatos();
+            ControladorPQRS baseDeDatos = new ControladorPQRS();
             int idPQRS = baseDeDatos.obtenerIdPQRS(motivo, destinatario);
             
             // Cambiar el estado de la PQRS a "Respondida"

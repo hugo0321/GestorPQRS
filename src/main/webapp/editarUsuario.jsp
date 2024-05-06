@@ -4,6 +4,7 @@
     Author     : Hugo
 --%>
 
+<%@page import="com.mycompany.tutorial.ControladorUsuarios"%>
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="com.mycompany.tutorial.ConexionBaseDeDatos" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
@@ -23,7 +24,7 @@
         
         // Actualizar los datos del usuario en la base de datos utilizando el método editarUsuario
         try {
-            ConexionBaseDeDatos.editarUsuario(idUsuario, nombreUsuario, cedula, emailRegistro);
+            ControladorUsuarios.editarUsuario(idUsuario, nombreUsuario, cedula, emailRegistro);
             // Redirigir a ListaUsuarios.jsp y mostrar una alerta de éxito
             response.sendRedirect("ListaUsuarios.jsp?success=true");
         } catch (SQLException e) {

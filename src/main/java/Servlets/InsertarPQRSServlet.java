@@ -5,6 +5,9 @@
 package Servlets;
 
 import com.mycompany.tutorial.ConexionBaseDeDatos;
+import com.mycompany.tutorial.ControladorEmails;
+import com.mycompany.tutorial.ControladorPQRS;
+import com.mycompany.tutorial.ControladorUsuarios;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,7 +48,7 @@ public class InsertarPQRSServlet extends HttpServlet {
         // Si hay una sesión iniciada, obtener el ID de usuario de la sesión
         String nombreUsuario = (String) session.getAttribute("username");
         try {
-            usuarioId = ConexionBaseDeDatos.obtenerIdUsuario(nombreUsuario);
+            usuarioId = ControladorUsuarios.obtenerIdUsuario(nombreUsuario);
         } catch (SQLException e) {
             // Manejar la excepción aquí
             e.printStackTrace();
@@ -77,7 +80,7 @@ public class InsertarPQRSServlet extends HttpServlet {
 
     // Verificar si la PQRS es duplicada del mismo usuario
     try {
-        if (ConexionBaseDeDatos.existePQRS(usuarioId, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath)) {
+        if (ControladorPQRS.existePQRS(usuarioId, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath)) {
             // Si ya existe una PQRS duplicada del mismo usuario, redirigir a una página de error
             response.sendRedirect("ErrorPQRSRepetida.jsp");
             return;
@@ -92,9 +95,9 @@ public class InsertarPQRSServlet extends HttpServlet {
 
     // Insertar la PQRS en la base de datos con la ruta del archivo y el usuario_id
     try {
-        ConexionBaseDeDatos.insertarPQRS(primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath, usuarioId);
+        ControladorPQRS.insertarPQRS(primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath, usuarioId);
         // Envía el correo electrónico al usuario
-        ConexionBaseDeDatos.enviarCorreoRegistroExitoso(email, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje);
+        ControladorEmails.enviarCorreoRegistroExitoso(email, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje);
         response.sendRedirect("RegistroExitosoPQRS.jsp");
     } catch (SQLException e) {
         response.sendRedirect("ErrorRegistroPQRS.jsp");

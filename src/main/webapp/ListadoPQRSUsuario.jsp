@@ -4,6 +4,7 @@
     Author     : Hugo
 --%>
 
+<%@page import="com.mycompany.tutorial.ControladorUsuarios"%>
 <%@page import="java.util.List"%>
 <%@page import="com.mycompany.tutorial.PQRS"%>
 <%@page import="java.sql.SQLException"%>
@@ -129,9 +130,9 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="indexEntrada.jsp">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="#services">Servicios</a></li>
-                <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
-                <li class="nav-item"><a class="nav-link" href="#contact">PQRS</a></li>
+                <li class="nav-item"><a class="nav-link" href="indexEntrada.jsp#services">Servicios</a></li>
+                <li class="nav-item"><a class="nav-link" href="indexEntrada.jsp#portfolio">Portfolio</a></li>
+                <li class="nav-item"><a class="nav-link" href="indexEntrada.jsp#contact">PQRS</a></li>
                 <li class="nav-item"><a class="nav-link" href="ListadoPQRSUsuario.jsp">Sigue tus PQRS</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -194,7 +195,7 @@
                 int usuarioId = 0; // Inicializamos el usuarioId
                 String nombreUsuario = (String) lsession.getAttribute("username");
                 try {
-                    usuarioId = ConexionBaseDeDatos.obtenerIdUsuario(nombreUsuario);
+                    usuarioId = ControladorUsuarios.obtenerIdUsuario(nombreUsuario);
                 } catch (SQLException e) {
                     // Manejar la excepción aquí
                     e.printStackTrace();
@@ -203,7 +204,7 @@
                     return; // Terminar la ejecución de la página actual
                 }
 
-                ConexionBaseDeDatos controlador = new ConexionBaseDeDatos();
+                ControladorUsuarios controlador = new ControladorUsuarios();
                 List<PQRS> listaPQRS = null;
 
                 try {

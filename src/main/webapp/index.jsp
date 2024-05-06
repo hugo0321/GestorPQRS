@@ -183,7 +183,7 @@
                     <div class="col-lg-8 col-xl-6 text-center">
                         <h2 class="mt-0">Ayudanos a mejorar</h2>
                         <hr class="divider" />
-                        <p class="text-muted mb-5">Inicie sesión o registrese para mandar sus PQRS!</p>
+                        <p class="text-muted mb-5">Inicie sesión o registrese para mandar sus PQRS</p>
                     </div>
                 </div>
 
@@ -271,7 +271,7 @@
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-lg-4 text-center mb-5 mb-lg-0">
                         <i class="bi-phone fs-2 mb-3 text-muted"></i>
-                        <div>+1 (555) 123-4567</div>
+                        <div>+57 (333) 333-3333</div>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,7 @@
     Author     : Hugo
 --%>
 
+<%@page import="com.mycompany.tutorial.ControladorUsuarios"%>
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="com.mycompany.tutorial.ConexionBaseDeDatos" %>
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
@@ -20,7 +21,7 @@
         
         // Eliminar al usuario en la base de datos utilizando el método eliminarUsuario
         try {
-            ConexionBaseDeDatos.eliminarUsuario(idUsuario);
+            ControladorUsuarios.eliminarUsuario(idUsuario);
             // Enviar una respuesta exitosa a la solicitud AJAX
             response.getWriter().write("Usuario eliminado exitosamente.");
         } catch (SQLException e) {

@@ -3,6 +3,7 @@
     Created on : 2/05/2024, 11:58:19 a. m.
     Author     : Hugo
 --%>
+<%@page import="com.mycompany.tutorial.ControladorUsuarios"%>
 <%@ page import="java.util.List" %>
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="java.sql.Connection" %>
@@ -87,7 +88,7 @@
                 </thead>
                 <tbody>
                     <% 
-                        ConexionBaseDeDatos controlador = new ConexionBaseDeDatos();
+                        ControladorUsuarios controlador = new ControladorUsuarios();
                         List<Usuario> listaUsuarios;
                         try {
                             listaUsuarios = controlador.obtenerUsuarios();

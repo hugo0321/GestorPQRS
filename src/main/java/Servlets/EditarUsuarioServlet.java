@@ -5,6 +5,7 @@
 package Servlets;
 
 import com.mycompany.tutorial.ConexionBaseDeDatos;
+import com.mycompany.tutorial.ControladorUsuarios;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
@@ -22,7 +23,7 @@ public class EditarUsuarioServlet extends HttpServlet {
         String emailRegistro = request.getParameter("emailRegistro");
 
         try {
-            ConexionBaseDeDatos.editarUsuario(id, nombreUsuario, cedula, emailRegistro);
+            ControladorUsuarios.editarUsuario(id, nombreUsuario, cedula, emailRegistro);
             response.sendRedirect("listado_usuarios.jsp"); // Redirige a la página de listado de usuarios
         } catch (SQLException e) {
             e.printStackTrace();

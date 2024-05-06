@@ -8,6 +8,7 @@ package Servlets;
 
 
 import com.mycompany.tutorial.ConexionBaseDeDatos;
+import com.mycompany.tutorial.ControladorUsuarios;
 import com.mycompany.tutorial.Usuario;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -33,7 +34,7 @@ public class LoginServlet extends HttpServlet {
             String contrasena = request.getParameter("contrasena");
 
             // Verificar las credenciales
-            Usuario usuario = ConexionBaseDeDatos.login(nombreUsuario, contrasena);
+            Usuario usuario = ControladorUsuarios.login(nombreUsuario, contrasena);
 
             if (nombreUsuario.equals("admin") && contrasena.equals("password")) {
                 // Si es el administrador fijo, redirige a ListaPQRS.jsp
@@ -60,7 +61,7 @@ public class LoginServlet extends HttpServlet {
             // y se encuentra registrado en la base de datos, redirige a indexEntrada.jsp
             String nombreUsuario = request.getParameter("usuario");
             String contrasena = request.getParameter("contrasena");
-            Usuario usuario = ConexionBaseDeDatos.login(nombreUsuario, contrasena);
+            Usuario usuario = ControladorUsuarios.login(nombreUsuario, contrasena);
             if (usuario != null && !nombreUsuario.equals("admin")) {
                 HttpSession miSesion = request.getSession();
                 miSesion.setAttribute("username", nombreUsuario);

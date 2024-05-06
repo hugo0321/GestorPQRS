@@ -5,6 +5,7 @@
 package Servlets;
 
 import com.mycompany.tutorial.ConexionBaseDeDatos;
+import com.mycompany.tutorial.ControladorUsuarios;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
@@ -19,7 +20,7 @@ public class EliminarUsuarioServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
 
         try {
-            ConexionBaseDeDatos.eliminarUsuario(id);
+            ControladorUsuarios.eliminarUsuario(id);
             response.sendRedirect("listado_usuarios.jsp"); // Redirige a la página de listado de usuarios
         } catch (SQLException e) {
             e.printStackTrace();

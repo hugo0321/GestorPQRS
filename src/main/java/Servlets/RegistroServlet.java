@@ -5,6 +5,8 @@
 package Servlets;
 
 import com.mycompany.tutorial.ConexionBaseDeDatos;
+import com.mycompany.tutorial.ControladorEmails;
+import com.mycompany.tutorial.ControladorUsuarios;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -36,7 +38,7 @@ public class RegistroServlet extends HttpServlet {
 
             try {
                 // Verificar si ya existe un usuario con el mismo nombre de usuario, cédula o correo electrónico
-                boolean existeUsuario = ConexionBaseDeDatos.existeUsuario(nombreUsuario, cedula, email);
+                boolean existeUsuario = ControladorUsuarios.existeUsuario(nombreUsuario, cedula, email);
                 if (existeUsuario) {
                     request.setAttribute("mensaje", "Ya existe un usuario con el mismo nombre de usuario, cédula o correo electrónico.");
                     request.getRequestDispatcher("RegistroExitosoUsuario.jsp").forward(request, response);
@@ -44,10 +46,10 @@ public class RegistroServlet extends HttpServlet {
                 }
 
                 // Insertar el nuevo usuario en la base de datos
-                ConexionBaseDeDatos.insertarUsuario(nombreUsuario, cedula, contrasena, email);
+                ControladorUsuarios.insertarUsuario(nombreUsuario, cedula, contrasena, email);
 
                 // Envío del correo de registro exitoso
-                ConexionBaseDeDatos.enviarRegistroExitoso(email, nombreUsuario, cedula, contrasena, email);
+                ControladorEmails.enviarRegistroExitoso(email, nombreUsuario, cedula, contrasena, email);
 
                 // Establecer mensaje de éxito
                // request.setAttribute("mensaje", "¡Registro exitoso! Se ha enviado un correo con los detalles de la cuenta.");
