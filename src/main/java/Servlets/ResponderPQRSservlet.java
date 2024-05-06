@@ -23,14 +23,15 @@ public class ResponderPQRSservlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             // Procesar los datos del formulario de respuesta a PQRS
-           
+            String primerNombre = request.getParameter("primerNombre");
+            String primerApellido = request.getParameter("primerApellido");
             String motivo = request.getParameter("motivo");
             String email = request.getParameter("destinatario");
             String mensajeRespuesta = request.getParameter("mensajeRespuesta");
             int id = Integer.parseInt(request.getParameter("id"));
 
             // Llamar al método para responder PQRS y cambiar el estado
-            boolean respuestaEnviada = responderPQRS(email, motivo, mensajeRespuesta);
+            boolean respuestaEnviada = responderPQRS(email, motivo, mensajeRespuesta,primerNombre, primerApellido);
             if (respuestaEnviada) {
                 // Actualizar el estado de la PQRS a "Respondida"
                 actualizarEstadoPQRS(id, "Respondida");
@@ -61,9 +62,9 @@ public class ResponderPQRSservlet extends HttpServlet {
         processRequest(request, response);
     }
 
-    public static boolean responderPQRS(String destinatario, String motivo, String mensajeRespuesta) {
+    public static boolean responderPQRS(String destinatario, String motivo, String mensajeRespuesta, String primerNombre, String primerApellido) {
         // Llama al método responderPQRS de la otra clase
-        ControladorEmails.responderPQRS(destinatario, motivo, mensajeRespuesta);
+        ControladorEmails.responderPQRS(destinatario, motivo, mensajeRespuesta, primerNombre, primerApellido);
         // Aquí podrías agregar lógica adicional, como verificar si se envió la respuesta correctamente
         return true; // En este ejemplo, siempre asumimos que la respuesta se envió correctamente
     }

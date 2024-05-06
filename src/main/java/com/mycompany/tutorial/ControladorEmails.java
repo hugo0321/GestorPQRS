@@ -92,13 +92,15 @@ public class ControladorEmails {
 }
     
     /**
- * Responde a una PQRS (Petición, Queja, Reclamo o Sugerencia) especificando el destinatario, motivo y mensaje de respuesta.
+ * Responde a una PQRS (Petición, Queja, Reclamo o Sugerencia) especificando el destinatario, motivo ,mensaje de respuesta, primerNombre y primerApellido.
  *
  * @param destinatario      Dirección de correo electrónico del destinatario.
  * @param motivo            Motivo de la PQRS.
  * @param mensajeRespuesta  Mensaje de respuesta a la PQRS.
+ * @param primerNombre      Primer nombre del usuario que realizo la PQRS.
+ * @param primerApellido    Primer Apellido del usuario que realizo la PQRS.
  */
-    public static void responderPQRS(String destinatario, String motivo, String mensajeRespuesta) {
+    public static void responderPQRS(String destinatario, String motivo, String mensajeRespuesta, String primerNombre, String primerApellido) {
         // Configuración del servidor de correo
         String correoRemitente = "gestorpqrs2@gmail.com";
         String passwordRemitente = "h g x n n j x w n w c b a d k i";
@@ -128,7 +130,7 @@ public class ControladorEmails {
 
             // Construir el texto del mensaje con la respuesta en formato HTML
             String htmlContent = "<html><body style=\"font-family: Arial, sans-serif;\">"
-                    + "<p>Estimado(a) " + destinatario + ",</p>"
+                    + "<p>Estimado(a) " + primerNombre + " " + primerApellido + ",</p>"
                     + "<p>Reciba un cordial saludo.</p>"
                     + "<p>Le agradecemos por su comunicación y nos complace brindarle una respuesta oportuna.</p>"
                     + "<p>Respecto al motivo de su PQRS relacionado con '<strong>" + motivo + "</strong>',</p>"

@@ -213,7 +213,7 @@
                     <div class="col-lg-8 col-xl-6 text-center">
                         <h2 class="mt-0">Ayudanos a mejorar</h2>
                         <hr class="divider" />
-                        <p class="text-muted mb-5">Realiza tu PQRS te responderemos lo antes posible!</p>
+                        <p class="text-muted mb-5">Realiza tu PQRS te responderemos lo antes posible</p>
                     </div>
                 </div>
                 
@@ -229,28 +229,28 @@
         <form id="contactForm" action="InsertarPQRSServlet" method="post" enctype="multipart/form-data" onsubmit="return validarFormulario()">
 
     <!-- Primer Nombre input -->
-    <div class="form-floating mb-3">
-        <input class="form-control required" id="primerNombre" type="text" placeholder="Enter your name..." name="primerNombre" />
-        <label for="primerNombre">Primer nombre</label>
-    </div>
-    
-    <!-- Segundo Nombre input -->
-    <div class="form-floating mb-3">
-        <input class="form-control" id="segundoNombre" type="text" placeholder="Enter your name..." name="segundoNombre" />
-        <label for="segundoNombre">Segundo Nombre (Opcional)</label>
-    </div>
-    
-    <!-- Primer Apellido input -->
-    <div class="form-floating mb-3">
-        <input class="form-control required" id="primerApellido" type="text" placeholder="Enter your name..." name="primerApellido" />
-        <label for="primerApellido">Primer Apellido</label>
-    </div>
-    
-    <!-- Segundo Apellido input -->
-    <div class="form-floating mb-3">
-        <input class="form-control" id="segundoApellido" type="text" placeholder="Enter your name..." name="segundoApellido" />
-        <label for="segundoApellido">Segundo Apellido (Opcional)</label>
-    </div>
+<div class="form-floating mb-3">
+    <input class="form-control required" id="primerNombre" type="text" placeholder="Enter your name..." name="primerNombre" oninput="formatName(this)">
+    <label for="primerNombre">Primer nombre</label>
+</div>
+
+<!-- Segundo Nombre input -->
+<div class="form-floating mb-3">
+    <input class="form-control" id="segundoNombre" type="text" placeholder="Enter your name..." name="segundoNombre" oninput="formatName(this)">
+    <label for="segundoNombre">Segundo Nombre (Opcional)</label>
+</div>
+
+<!-- Primer Apellido input -->
+<div class="form-floating mb-3">
+    <input class="form-control required" id="primerApellido" type="text" placeholder="Enter your name..." name="primerApellido" oninput="formatName(this)">
+    <label for="primerApellido">Primer Apellido</label>
+</div>
+
+<!-- Segundo Apellido input -->
+<div class="form-floating mb-3">
+    <input class="form-control" id="segundoApellido" type="text" placeholder="Enter your name..." name="segundoApellido" oninput="formatName(this)">
+    <label for="segundoApellido">Segundo Apellido (Opcional)</label>
+</div>
     
     <!-- Motivo select -->
     <div class="form-floating mb-3">
@@ -299,6 +299,22 @@
 </form>
 
 <script>
+    function formatName(input) {
+    // Obtiene el valor del campo de entrada
+    let nombre = input.value.toLowerCase();
+
+    // Remueve tildes
+   nombre = nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    // Reemplaza "ñ" con "n"
+    nombre = nombre.replace(/ñ/g, 'n');
+
+    // Capitaliza la primera letra
+    nombre = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+
+    // Actualiza el valor del campo de entrada con el nombre formateado
+    input.value = nombre;
+}
     function validarFormulario() {
         var inputs = document.querySelectorAll('.required');
         var pdfFile = document.getElementById('pdfFile');
