@@ -138,11 +138,12 @@
                             for (PQRS pqrs : listaPQRS) {
                     %>
                     <tr>
-                        <td><%= pqrs.getId() %></td>
-                        <td><%= pqrs.getPrimerNombre()%></td>
-                        <td><%= pqrs.getSegundoNombre() %></td>
-                        <td><%= pqrs.getPrimerApellido() %></td>
-                        <td><%= pqrs.getSegundoApellido() %></td>
+                        <td class="id"><%= pqrs.getId() %></td>
+                        <td class="primerNombre"><%= pqrs.getPrimerNombre()%></td>
+<td class="segundoNombre"><%= pqrs.getSegundoNombre() %></td>
+<td class="primerApellido"><%= pqrs.getPrimerApellido() %></td>
+<td class="segundoApellido"><%= pqrs.getSegundoApellido() %></td>
+
                         <td class="motivo"><%= pqrs.getMotivo() %></td>
                         <td class="email"><%= pqrs.getEmail() %></td>
                         <td class="telefono"><%= pqrs.getTelefono() %></td>
@@ -230,17 +231,49 @@
         </div>
     </div>
     <!-- Script para prellenar los campos de destinatario y motivo -->
+<!-- Script para prellenar los campos de destinatario, motivo y otros campos ocultos -->
 <script>
     $(document).ready(function() {
-        $(".btn-responder").click(function() {
-            var email = $(this).closest("tr").find(".email").text();
-            var motivo = $(this).closest("tr").find(".motivo").text();
-            $("#destinatario").val(email);
-            $("#motivo").val(motivo);
-            $("#responderPQRSModal").modal("show");
-        });
+    $(".btn-responder").click(function() {
+        var id = $(this).closest("tr").find(".id").text();
+        var email = $(this).closest("tr").find(".email").text();
+        var motivo = $(this).closest("tr").find(".motivo").text();
+        var primerNombre = $(this).closest("tr").find(".primerNombre").text();
+        var segundoNombre = $(this).closest("tr").find(".segundoNombre").text();
+        var primerApellido = $(this).closest("tr").find(".primerApellido").text();
+        var segundoApellido = $(this).closest("tr").find(".segundoApellido").text();
+        var telefono = $(this).closest("tr").find(".telefono").text();
+        var mensaje = $(this).closest("tr").find(".mensaje").text();
+        var rutaPDF = $(this).closest("tr").find(".rutaPDF").text();
+        
+        console.log("Email:", email);
+        console.log("Motivo:", motivo);
+        console.log("Primer Nombre:", primerNombre);
+        console.log("Segundo Nombre:", segundoNombre);
+        console.log("Primer Apellido:", primerApellido);
+        console.log("Segundo Apellido:", segundoApellido);
+        console.log("Teléfono:", telefono);
+        console.log("Mensaje:", mensaje);
+        console.log("Ruta PDF:", rutaPDF);
+         console.log("ID:", id);
+        
+        $("#destinatario").val(email);
+        $("#motivo").val(motivo);
+        $("#primerNombre").val(primerNombre);
+        $("#segundoNombre").val(segundoNombre);
+        $("#primerApellido").val(primerApellido);
+        $("#segundoApellido").val(segundoApellido);
+        $("#telefono").val(telefono);
+        $("#mensaje").val(mensaje);
+        $("#rutaPDF").val(rutaPDF);
+        $("#id").val(id);
+        
+        $("#responderPQRSModal").modal("show");
     });
+});
+
 </script>
+
 <!-- Modal para responder a la PQRS -->
 <div class="modal fade" id="responderPQRSModal" tabindex="-1" role="dialog" aria-labelledby="responderPQRSModalLabel" aria-hidden="true">
     <div class="modal-dialog draggable" role="document">
@@ -254,6 +287,16 @@
             <div class="modal-body">
                 <!-- Formulario para escribir la respuesta -->
                 <form id="responderForm" action="ResponderPQRSServlet" method="post">
+                    <!-- Campos ocultos para pasar los parámetros necesarios -->
+                    <input type="hidden" id="primerNombre" name="primerNombre">
+                    <input type="hidden" id="segundoNombre" name="segundoNombre">
+                    <input type="hidden" id="primerApellido" name="primerApellido">
+                    <input type="hidden" id="segundoApellido" name="segundoApellido">
+                    <input type="hidden" id="email" name="email">
+                    <input type="hidden" id="telefono" name="telefono">
+                    <input type="hidden" id="mensaje" name="mensaje">
+                    <input type="hidden" id="rutaPDF" name="rutaPDF">
+                     <input type="hidden" id="id" name="id">
                     <div class="form-group">
                         <label for="destinatario">Destinatario:</label>
                         <input type="email" class="form-control" id="destinatario" name="destinatario" required>
@@ -312,6 +355,60 @@
                     console.error('Error al copiar al portapapeles: ', err);
                     alert('Hubo un error al copiar la ruta del PDF al portapapeles.');
                 });
+        });
+    });
+</script>
+<!-- Agrega este script JavaScript en tu página para manejar el clic del botón -->
+<script>
+    // Obtener todos los botones de clase btn-eliminar
+    var botonesEliminar = document.querySelectorAll('.btn-eliminar');
+
+    // Agregar un evento de clic a cada botón
+    botonesEliminar.forEach(function(boton) {
+        boton.addEventListener('click', function() {
+            // Obtener el ID de la PQRS desde el atributo data-id
+            var idPQRS = this.getAttribute('data-id');
+            
+            // Mostrar una confirmación al usuario
+            var confirmacion = confirm('¿Estás seguro de que quieres eliminar esta PQRS?');
+            
+            // Si el usuario confirma la eliminación, enviar la solicitud HTTP
+            if (confirmacion) {
+                // Crear una nueva solicitud HTTP
+                var xhr = new XMLHttpRequest();
+                
+                // Especificar la URL y el método HTTP (POST o GET) para la solicitud
+                xhr.open('GET', 'eliminarPQRS.jsp?idPQRS=' + idPQRS, true);
+                
+                // Enviar la solicitud
+                xhr.send();
+                
+                // Redireccionar a ListaPQRS.jsp después de eliminar la PQRS
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        window.location.href = 'ListaPQRS.jsp';
+                    }
+                };
+            }
+        });
+    });
+</script>
+<!-- Script para deshabilitar el botón Responder si el estado es Respondida -->
+<script>
+    // Esperar a que el contenido de la página esté completamente cargado
+    document.addEventListener('DOMContentLoaded', function() {
+        // Obtener todos los botones de clase btn-responder
+        var botonesResponder = document.querySelectorAll('.btn-responder');
+
+        // Iterar sobre cada botón de Responder
+        botonesResponder.forEach(function(boton) {
+            // Obtener el estado de la PQRS desde la fila de la tabla
+            var estadoPQRS = boton.parentElement.parentElement.querySelector('.estado').textContent.trim();
+
+            // Deshabilitar el botón si el estado es "Respondida"
+            if (estadoPQRS === 'Respondida') {
+                boton.disabled = true; // Deshabilitar el botón
+            }
         });
     });
 </script>

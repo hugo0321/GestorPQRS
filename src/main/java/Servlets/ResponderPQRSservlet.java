@@ -4,7 +4,6 @@
  */
 package Servlets;
 
-import com.mycompany.tutorial.ConexionBaseDeDatos;
 import com.mycompany.tutorial.ControladorEmails;
 import com.mycompany.tutorial.ControladorPQRS;
 import java.io.IOException;
@@ -16,9 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
-@WebServlet(name = "ResponderPQRSServlet", urlPatterns = {"/ResponderPQRSServlet"})
+@WebServlet(name = "ResponderPQRSservlet", urlPatterns = {"/ResponderPQRSServlet"})
 public class ResponderPQRSservlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -26,15 +23,17 @@ public class ResponderPQRSservlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             // Procesar los datos del formulario de respuesta a PQRS
-            String destinatario = request.getParameter("destinatario");
+           
             String motivo = request.getParameter("motivo");
+            String email = request.getParameter("destinatario");
             String mensajeRespuesta = request.getParameter("mensajeRespuesta");
+            int id = Integer.parseInt(request.getParameter("id"));
 
             // Llamar al método para responder PQRS y cambiar el estado
-            boolean respuestaEnviada = responderPQRS(destinatario, motivo, mensajeRespuesta);
+            boolean respuestaEnviada = responderPQRS(email, motivo, mensajeRespuesta);
             if (respuestaEnviada) {
                 // Actualizar el estado de la PQRS a "Respondida"
-                actualizarEstadoPQRS(destinatario, motivo);
+                actualizarEstadoPQRS(id, "Respondida");
                 
                 // Redirigir a listarPQRS.jsp con un mensaje de confirmación
                 String mensajeConfirmacion = "La respuesta se envió correctamente.";
@@ -43,6 +42,10 @@ public class ResponderPQRSservlet extends HttpServlet {
             } else {
                 out.println("Error al enviar la respuesta.");
             }
+        } catch (NumberFormatException e) {
+            System.out.println("Error al obtener el ID de la PQRS: " + e.getMessage());
+        } catch (SQLException ex) {
+            System.out.println("Error al actualizar el estado de la PQRS: " + ex.getMessage());
         }
     }
 
@@ -65,16 +68,9 @@ public class ResponderPQRSservlet extends HttpServlet {
         return true; // En este ejemplo, siempre asumimos que la respuesta se envió correctamente
     }
     
-    public static void actualizarEstadoPQRS(String destinatario, String motivo) {
-        // Obtener el ID de la PQRS
-        try {
-            ControladorPQRS baseDeDatos = new ControladorPQRS();
-            int idPQRS = baseDeDatos.obtenerIdPQRS(motivo, destinatario);
-            
-            // Cambiar el estado de la PQRS a "Respondida"
-            baseDeDatos.cambiarEstadoPQRS(idPQRS, "Respondida");
-        } catch (SQLException e) {
-            System.out.println("Error al actualizar el estado de la PQRS: " + e.getMessage());
-        }
+    public static void actualizarEstadoPQRS(int idPQRS, String nuevoEstado) throws SQLException {
+        ControladorPQRS baseDeDatos = new ControladorPQRS();
+        baseDeDatos.cambiarEstadoPQRS(idPQRS, nuevoEstado);
     }
 }
+

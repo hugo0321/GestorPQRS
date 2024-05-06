@@ -248,15 +248,22 @@ public class ControladorPQRS {
         }
     }
 }
-   /**
- * Obtiene el ID de una PQRS en la base de datos según su motivo y el correo electrónico del usuario.
+  /**
+ * Obtiene el ID de una PQRS en la base de datos según sus datos.
  *
- * @param motivo         Motivo de la PQRS.
- * @param emailUsuario   Correo electrónico del usuario asociado a la PQRS.
+ * @param primerNombre    Primer nombre de la PQRS.
+ * @param segundoNombre   Segundo nombre de la PQRS.
+ * @param primerApellido  Primer apellido de la PQRS.
+ * @param segundoApellido Segundo apellido de la PQRS.
+ * @param motivo          Motivo de la PQRS.
+ * @param emailUsuario    Correo electrónico de la PQRS.
+ * @param telefono        Teléfono de la PQRS.
+ * @param mensaje         Mensaje de la PQRS.
+ * @param rutaPDF         Ruta del PDF adjunto de la PQRS.
  * @return ID de la PQRS, o -1 si no se encuentra.
- * @throws SQLException  Si ocurre un error de SQL al obtener el ID.
+ * @throws SQLException   Si ocurre un error de SQL al obtener el ID.
  */
-    public int obtenerIdPQRS(String motivo, String emailUsuario) throws SQLException {
+public int obtenerIdPQRS(String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String emailUsuario, String telefono, String mensaje, String rutaPDF) throws SQLException {
     Connection conexion = null;
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -265,11 +272,18 @@ public class ControladorPQRS {
     try {
         conexion = getConexion();
         if (conexion != null) {
-            // Consulta SQL para obtener el ID de la PQRS con el motivo y el correo electrónico especificados
-            String consulta = "SELECT id FROM PQRS WHERE Motivo = ? AND email = ?";
+            // Consulta SQL para obtener el ID de la PQRS con los datos especificados
+            String consulta = "SELECT id FROM PQRS WHERE PrimerNombre = ? AND SegundoNombre = ? AND PrimerApellido = ? AND SegundoApellido = ? AND Motivo = ? AND email = ? AND Telefono = ? AND Mensaje = ? AND RutaPDF = ?";
             statement = conexion.prepareStatement(consulta);
-            statement.setString(1, motivo);
-            statement.setString(2, emailUsuario);
+            statement.setString(1, primerNombre);
+            statement.setString(2, segundoNombre);
+            statement.setString(3, primerApellido);
+            statement.setString(4, segundoApellido);
+            statement.setString(5, motivo);
+            statement.setString(6, emailUsuario);
+            statement.setString(7, telefono);
+            statement.setString(8, mensaje);
+            statement.setString(9, rutaPDF);
 
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -298,5 +312,41 @@ public class ControladorPQRS {
     }
 
     return idPQRS;
+}
+
+    /**
+ * Elimina una PQRS específica de la base de datos.
+ * 
+ * @param idPQRS El ID de la PQRS que se va a eliminar.
+ * @throws SQLException Si ocurre algún error al intentar acceder a la base de datos.
+ */
+    public void eliminarPQRS(int idPQRS) throws SQLException {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            String sql = "DELETE FROM PQRS WHERE id = ?";
+            statement = conexion.prepareStatement(sql);
+            statement.setInt(1, idPQRS);
+            
+            int filasEliminadas = statement.executeUpdate();
+            if (filasEliminadas > 0) {
+                System.out.println("PQRS eliminada correctamente.");
+            } else {
+                System.out.println("No se pudo eliminar la PQRS.");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al eliminar la PQRS: " + e.getMessage());
+        throw e;
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (conexion != null) {
+            conexion.close();
+        }
+    }
 }
 }
