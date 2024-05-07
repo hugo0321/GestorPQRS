@@ -356,4 +356,57 @@ public class ControladorPQRS {
             }
         }
     }
+    /**
+ * Edita una PQRS existente en la base de datos.
+ *
+ * @param idPQRS ID de la PQRS que se va a editar.
+ * @param primerNombre Nuevo primer nombre del remitente.
+ * @param segundoNombre Nuevo segundo nombre del remitente.
+ * @param primerApellido Nuevo primer apellido del remitente.
+ * @param segundoApellido Nuevo segundo apellido del remitente.
+ * @param motivo Nuevo motivo de la PQRS.
+ * @param email Nuevo correo electrónico del remitente.
+ * @param telefono Nuevo número de teléfono del remitente.
+ * @param mensaje Nuevo mensaje adicional (opcional).
+ * @throws SQLException Si ocurre un error de SQL durante la actualización.
+ */
+public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String email, String telefono, String mensaje) throws SQLException {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            // Consulta SQL para actualizar los datos de la PQRS
+            String sql = "UPDATE PQRS SET PrimerNombre = ?, SegundoNombre = ?, PrimerApellido = ?, SegundoApellido = ?, Motivo = ?, email = ?, Telefono = ?, Mensaje = ? WHERE id = ?";
+            statement = conexion.prepareStatement(sql);
+            statement.setString(1, primerNombre);
+            statement.setString(2, segundoNombre);
+            statement.setString(3, primerApellido);
+            statement.setString(4, segundoApellido);
+            statement.setString(5, motivo);
+            statement.setString(6, email);
+            statement.setString(7, telefono);
+            statement.setString(8, mensaje);
+            statement.setInt(9, idPQRS);
+
+            int filasActualizadas = statement.executeUpdate();
+            if (filasActualizadas > 0) {
+                System.out.println("PQRS editada correctamente.");
+            } else {
+                System.out.println("No se pudo editar la PQRS.");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al editar la PQRS: " + e.getMessage());
+        throw e;
+    } finally {
+        if (statement != null) {
+            statement.close();
+        }
+        if (conexion != null) {
+            conexion.close();
+        }
+    }
+}
+
 }

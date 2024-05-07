@@ -1,77 +1,99 @@
-<%-- 
-    Document   : navarUsuario
-    Created on : 4/05/2024, 7:18:31 p.Â m.
-    Author     : Hugo
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Navbar</title>
-        <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    </head>
-    <body>
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Constructora</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav">
-                        <!-- Enlace para "Inicio" con ventana emergente -->
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#" onclick="showPopup(event)">Inicio</a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+   <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Features</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pricing</a>
-                        </li>
-                    </ul>
+        <style>
+        .navbar {
+            background-color: #343a40; /* Cambia el color de fondo del navbar */
+        }
 
-                    <!-- Dropdown para el usuario -->
+        .navbar-brand {
+            color: #ffffff; /* Cambia el color del texto de la marca del navbar */
+            font-size: 1.5rem; /* Cambia el tamaño del texto de la marca del navbar */
+        }
+
+        .navbar-nav .nav-link {
+            color: #ffffff; /* Cambia el color del texto de los enlaces del navbar */
+            font-size: 1rem; /* Cambia el tamaño del texto de los enlaces del navbar */
+            margin-left: 20px; /* Añade un margen izquierdo entre los enlaces del navbar */
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffffff; /* Cambia el color del texto de los enlaces del navbar al pasar el mouse sobre ellos */
+        }
+
+        .dropdown-menu {
+            background-color: #343a40; /* Cambia el color de fondo del menú desplegable */
+        }
+
+        .dropdown-menu .dropdown-item {
+            color: #ffffff; /* Cambia el color del texto de los elementos del menú desplegable */
+            font-size: 1rem; /* Cambia el tamaño del texto de los elementos del menú desplegable */
+        }
+
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #007bff; /* Cambia el color de fondo de los elementos del menú desplegable al pasar el mouse sobre ellos */
+            color: #ffffff; /* Cambia el color del texto de los elementos del menú desplegable al pasar el mouse sobre ellos */
+        }
+
+        .btn-outline-danger {
+            color: #dc3545; /* Cambia el color del borde del botón */
+            border-color: #dc3545; /* Cambia el color del borde del botón */
+        }
+
+        .btn-outline-danger:hover {
+            color: #ffffff; /* Cambia el color del texto del botón al pasar el mouse sobre él */
+            background-color: #dc3545; /* Cambia el color de fondo del botón al pasar el mouse sobre él */
+            border-color: #dc3545; /* Cambia el color del borde del botón al pasar el mouse sobre él */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#page-top">Constructora</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="indexEntrada.jsp">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="indexEntrada.jsp#services">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="indexEntrada.jsp#portfolio">Portfolio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="indexEntrada.jsp#contact">PQRS</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ListadoPQRSUsuario.jsp">Sigue tus PQRS</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="indexEntrada.jsp" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <%
-                                // Obtener la sesiÃ³n
-                                HttpSession laSesion = request.getSession(false);
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <% HttpSession laSesion = request.getSession(false);
                                 if (laSesion != null && laSesion.getAttribute("username") != null) {
-                                    // Obtener el nombre de usuario de la sesiÃ³n
                                     String username = (String) laSesion.getAttribute("username");
                             %>
                             Bienvenido, <%= username%>!
                             <% } else { %>
-                            No se ha iniciado sesiÃ³n
-                            <% }%>
+                            No se ha iniciado sesión
+                            <% } %>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <!-- Formulario para solicitar contraseÃ±a -->
-
-
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="svCerrarSesionUsuario ">Cerrar sesiÃ³n</a></li>
-                        </ul>
+                         <li class="nav-item"><a class="nav-link" href="svCerrarSesionUsuario">Cerrar sesión</a></li>
+                            
                     </li>
-                    <!-- Fin del Dropdown -->
-                </div>
+                </ul>
             </div>
-        </nav>
-
-
+        </div>
+    </nav>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS (debe estar al final del cuerpo) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
-

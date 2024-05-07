@@ -8,6 +8,7 @@ com\mycompany\tutorial\ControladorEmails$1.class
 Servlets\EditarUsuarioServlet.class
 Servlets\InsertarPQRSServlet.class
 com\mycompany\tutorial\ControladorEmails$4.class
+Servlets\EditarPQRSServlet.class
 Servlets\svCerrarSesionUsuario.class
 com\mycompany\tutorial\ControladorEmails$3.class
 com\mycompany\tutorial\Usuario.class
