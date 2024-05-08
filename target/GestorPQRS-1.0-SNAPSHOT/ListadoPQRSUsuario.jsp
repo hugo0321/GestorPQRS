@@ -23,7 +23,6 @@
 <html lang="es">
     <head>
 
-
         <meta charset="UTF-8">
         <jsp:include page="navarUsuario.jsp" />
         <title>Listado de PQRS</title>
@@ -86,6 +85,14 @@
                     var rutaPDF = $(this).closest("tr").find(".rutaPDF").text();
                     var horaSolicitud = $(this).closest("tr").find(".horaSolicitud").text();
                     var estado = $(this).closest("tr").find(".estado").text();
+                    // Mostrar los datos obtenidos en la consola
+                    console.log("Motivo:", motivo);
+                    console.log("Email:", email);
+                    console.log("Teléfono:", telefono);
+                    console.log("Mensaje:", mensaje);
+                    console.log("Ruta PDF:", rutaPDF);
+                    console.log("Fecha/Hora:", horaSolicitud);
+                    console.log("Estado:", estado);
                     $("#view-motivo").val(motivo);
                     $("#view-email").val(email);
                     $("#view-telefono").val(telefono);
@@ -105,7 +112,8 @@
                 $(".draggable").draggable();
             });
 
-        </script>
+        </script>   
+
     </head>
     <body>
         <div class="container">
@@ -331,55 +339,55 @@
             </div>
         </div>
     </div>
-<!-- Script para validar y formatear campos -->
-<!-- Script para validar y formatear campos -->
-<script>
-    $(document).ready(function() {
-        // Función para convertir la primera letra en mayúscula y las demás en minúsculas
-        function capitalizeFirstLetter(str) {
-            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-        }
-
-        // Función para validar y formatear el campo de nombres y apellidos
-        function formatNameInput(input) {
-            // Eliminar tildes y cambiar la letra 'ñ' por 'n'
-            var formatted = input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ñ/gi, 'n');
-            // Convertir la primera letra en mayúscula y las demás en minúsculas
-            return capitalizeFirstLetter(formatted);
-        }
-
-        // Función para validar y formatear el campo de número de teléfono
-        function formatPhoneNumber(input) {
-            // Eliminar caracteres no numéricos
-            var formatted = input.replace(/\D/g, '');
-            // Limitar a 10 dígitos
-            formatted = formatted.slice(0, 10);
-            return formatted;
-        }
-
-        // Validar y formatear al perder el foco del campo de nombres y apellidos
-        $("#primerNombre, #segundoNombre, #primerApellido, #segundoApellido").blur(function() {
-            var value = $(this).val();
-            // Eliminar números
-            var formatted = value.replace(/[0-9]/g, '');
-            $(this).val(formatNameInput(formatted));
-        });
-
-        // Validar y formatear al perder el foco del campo de teléfono
-        $("#telefono").blur(function() {
-            var value = $(this).val();
-            $(this).val(formatPhoneNumber(value));
-        });
-
-        // Validar longitud máxima de la cédula
-        $("#cedula").on("input", function() {
-            var value = $(this).val();
-            if (value.length > 12) {
-                $(this).val(value.slice(0, 12));
+    <!-- Script para validar y formatear campos -->
+    <!-- Script para validar y formatear campos -->
+    <script>
+        $(document).ready(function () {
+            // Función para convertir la primera letra en mayúscula y las demás en minúsculas
+            function capitalizeFirstLetter(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
             }
+
+            // Función para validar y formatear el campo de nombres y apellidos
+            function formatNameInput(input) {
+                // Eliminar tildes y cambiar la letra 'ñ' por 'n'
+                var formatted = input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ñ/gi, 'n');
+                // Convertir la primera letra en mayúscula y las demás en minúsculas
+                return capitalizeFirstLetter(formatted);
+            }
+
+            // Función para validar y formatear el campo de número de teléfono
+            function formatPhoneNumber(input) {
+                // Eliminar caracteres no numéricos
+                var formatted = input.replace(/\D/g, '');
+                // Limitar a 10 dígitos
+                formatted = formatted.slice(0, 10);
+                return formatted;
+            }
+
+            // Validar y formatear al perder el foco del campo de nombres y apellidos
+            $("#primerNombre, #segundoNombre, #primerApellido, #segundoApellido").blur(function () {
+                var value = $(this).val();
+                // Eliminar números
+                var formatted = value.replace(/[0-9]/g, '');
+                $(this).val(formatNameInput(formatted));
+            });
+
+            // Validar y formatear al perder el foco del campo de teléfono
+            $("#telefono").blur(function () {
+                var value = $(this).val();
+                $(this).val(formatPhoneNumber(value));
+            });
+
+            // Validar longitud máxima de la cédula
+            $("#cedula").on("input", function () {
+                var value = $(this).val();
+                if (value.length > 12) {
+                    $(this).val(value.slice(0, 12));
+                }
+            });
         });
-    });
-</script>
+    </script>
 
 
     <!-- Script para prellenar los campos de destinatario y motivo -->
@@ -556,6 +564,59 @@
             });
         });
     </script>
+    <!-- Modal para visualizar detalles de PQRS -->
+    <div class="modal fade" id="visualizarPQRSModal" tabindex="-1" role="dialog" aria-labelledby="visualizarPQRSModalLabel" aria-hidden="true">
+        <div class="modal-dialog draggable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="visualizarPQRSModalLabel">Detalles de la PQRS</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="view-motivo">Motivo</label>
+                        <input type="text" class="form-control" id="view-motivo" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-email">Email</label>
+                        <input type="email" class="form-control" id="view-email" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-telefono">Teléfono</label>
+                        <input type="text" class="form-control" id="view-telefono" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-mensaje">Mensaje</label>
+                        <textarea class="form-control" id="view-mensaje" readonly></textarea>
+                        <span id="expandir-mensaje" class="expandir-mensaje" style="color: blue; cursor: pointer;">(Expandir)</span>
+                    </div>
+                    <!-- Agrega un botón dentro del modal para copiar la ruta del PDF -->
+                    <div class="form-group">
+                        <label for="view-rutaPDF">Ruta PDF</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="view-rutaPDF" readonly>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary btn-copiar" type="button">Copiar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-horaSolicitud">Fecha/Hora</label>
+                        <input type="text" class="form-control" id="view-horaSolicitud" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="view-estado">Estado</label>
+                        <input type="text" class="form-control" id="view-estado" readonly>
+                    </div>
 
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

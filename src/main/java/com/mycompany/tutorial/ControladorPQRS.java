@@ -5,6 +5,7 @@
 package com.mycompany.tutorial;
 
 import static com.mycompany.tutorial.ConexionBaseDeDatos.getConexion;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -320,42 +321,69 @@ public class ControladorPQRS {
         return idPQRS;
     }
 
-    /**
-     * Elimina una PQRS específica de la base de datos.
-     *
-     * @param idPQRS El ID de la PQRS que se va a eliminar.
-     * @throws SQLException Si ocurre algún error al intentar acceder a la base
-     * de datos.
-     */
-    public void eliminarPQRS(int idPQRS) throws SQLException {
-        Connection conexion = null;
-        PreparedStatement statement = null;
-        try {
-            conexion = getConexion();
-            if (conexion != null) {
-                String sql = "DELETE FROM PQRS WHERE id = ?";
-                statement = conexion.prepareStatement(sql);
-                statement.setInt(1, idPQRS);
+   
+/**
+ * Elimina una PQRS específica de la base de datos.
+ *
+ * @param idPQRS El ID de la PQRS que se va a eliminar.
+ * @throws SQLException Si ocurre algún error al intentar acceder a la base
+ *                      de datos.
+ */
+public void eliminarPQRS(int idPQRS) throws SQLException {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            String obtenerRutaSQL = "SELECT RutaPDF FROM PQRS WHERE id = ?";
+            statement = conexion.prepareStatement(obtenerRutaSQL);
+            statement.setInt(1, idPQRS);
+            resultSet = statement.executeQuery();
+            
+            String rutaDocumento = null;
+            if (resultSet.next()) {
+                rutaDocumento = resultSet.getString("RutaPDF");
+            }
+            
+            String eliminarPQRSSQL = "DELETE FROM PQRS WHERE id = ?";
+            statement = conexion.prepareStatement(eliminarPQRSSQL);
+            statement.setInt(1, idPQRS);
 
-                int filasEliminadas = statement.executeUpdate();
-                if (filasEliminadas > 0) {
-                    System.out.println("PQRS eliminada correctamente.");
-                } else {
-                    System.out.println("No se pudo eliminar la PQRS.");
+            int filasEliminadas = statement.executeUpdate();
+            if (filasEliminadas > 0) {
+                System.out.println("PQRS eliminada correctamente.");
+                // Eliminar el documento asociado si existe
+                if (rutaDocumento != null) {
+                    File documento = new File(rutaDocumento);
+                    if (documento.exists()) {
+                        if (documento.delete()) {
+                            System.out.println("Documento asociado eliminado correctamente.");
+                        } else {
+                            System.out.println("No se pudo eliminar el documento asociado.");
+                        }
+                    }
                 }
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al eliminar la PQRS: " + e.getMessage());
-            throw e;
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-            if (conexion != null) {
-                conexion.close();
+            } else {
+                System.out.println("No se pudo eliminar la PQRS.");
             }
         }
+    } catch (SQLException e) {
+        System.out.println("Error al eliminar la PQRS: " + e.getMessage());
+        throw e;
+    } finally {
+        if (resultSet != null) {
+            resultSet.close();
+        }
+        if (statement != null) {
+            statement.close();
+        }
+        if (conexion != null) {
+            conexion.close();
+        }
     }
+}
+
     /**
  * Edita una PQRS existente en la base de datos.
  *
