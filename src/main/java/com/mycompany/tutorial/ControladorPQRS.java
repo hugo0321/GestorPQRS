@@ -384,7 +384,7 @@ public void eliminarPQRS(int idPQRS) throws SQLException {
     }
 }
 
-    /**
+  /**
  * Edita una PQRS existente en la base de datos.
  *
  * @param idPQRS ID de la PQRS que se va a editar.
@@ -396,17 +396,30 @@ public void eliminarPQRS(int idPQRS) throws SQLException {
  * @param email Nuevo correo electrónico del remitente.
  * @param telefono Nuevo número de teléfono del remitente.
  * @param mensaje Nuevo mensaje adicional (opcional).
+ * @param nuevaRutaPDF Nueva ruta del archivo PDF adjunto.
  * @throws SQLException Si ocurre un error de SQL durante la actualización.
  */
-public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String email, String telefono, String mensaje) throws SQLException {
+public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String email, String telefono, String mensaje, String nuevaRutaPDF) throws SQLException {
     Connection conexion = null;
     PreparedStatement statement = null;
+    ResultSet rs = null;
     try {
         conexion = getConexion();
         if (conexion != null) {
+            // Consulta SQL para obtener la ruta del PDF actual antes de la actualización
+            String sqlSelect = "SELECT RutaPDF FROM PQRS WHERE id = ?";
+            statement = conexion.prepareStatement(sqlSelect);
+            statement.setInt(1, idPQRS);
+            rs = statement.executeQuery();
+
+            String rutaAnteriorPDF = null;
+            if (rs.next()) {
+                rutaAnteriorPDF = rs.getString("RutaPDF");
+            }
+
             // Consulta SQL para actualizar los datos de la PQRS
-            String sql = "UPDATE PQRS SET PrimerNombre = ?, SegundoNombre = ?, PrimerApellido = ?, SegundoApellido = ?, Motivo = ?, email = ?, Telefono = ?, Mensaje = ? WHERE id = ?";
-            statement = conexion.prepareStatement(sql);
+            String sqlUpdate = "UPDATE PQRS SET PrimerNombre = ?, SegundoNombre = ?, PrimerApellido = ?, SegundoApellido = ?, Motivo = ?, email = ?, Telefono = ?, Mensaje = ?, RutaPDF = ? WHERE id = ?";
+            statement = conexion.prepareStatement(sqlUpdate);
             statement.setString(1, primerNombre);
             statement.setString(2, segundoNombre);
             statement.setString(3, primerApellido);
@@ -415,11 +428,20 @@ public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, St
             statement.setString(6, email);
             statement.setString(7, telefono);
             statement.setString(8, mensaje);
-            statement.setInt(9, idPQRS);
+            statement.setString(9, nuevaRutaPDF);
+            statement.setInt(10, idPQRS);
 
             int filasActualizadas = statement.executeUpdate();
             if (filasActualizadas > 0) {
                 System.out.println("PQRS editada correctamente.");
+                // Eliminar el PDF anterior si existe
+                if (rutaAnteriorPDF != null && !rutaAnteriorPDF.isEmpty()) {
+                    File archivoAnterior = new File(rutaAnteriorPDF);
+                    if (archivoAnterior.exists()) {
+                        archivoAnterior.delete();
+                        System.out.println("Documento PDF anterior eliminado correctamente.");
+                    }
+                }
             } else {
                 System.out.println("No se pudo editar la PQRS.");
             }
@@ -428,6 +450,10 @@ public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, St
         System.out.println("Error al editar la PQRS: " + e.getMessage());
         throw e;
     } finally {
+        // Cerrar recursos
+        if (rs != null) {
+            rs.close();
+        }
         if (statement != null) {
             statement.close();
         }

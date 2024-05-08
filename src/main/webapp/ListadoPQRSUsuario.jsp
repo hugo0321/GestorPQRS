@@ -197,7 +197,8 @@
                             <td>
                                 <button type="button" class="btn btn-info btn-sm btn-visualizar">Visualizar</button>
                                 <button type="button" class="btn btn-danger btn-sm btn-eliminar" data-id="<%= pqrs.getId()%>">Eliminar</button>
-                                <button type="button" class="btn btn-success btn-sm btn-editar" data-toggle="modal" data-target="#editarPQRSModal" data-email="<%= pqrs.getEmail()%>" data-motivo="<%= pqrs.getMotivo()%>">
+                                <button type="button" class="btn btn-success btn-sm btn-editar" data-toggle="modal" data-target="#editarPQRSModal" data-email="<%= pqrs.getEmail()%>" data-motivo="<%= pqrs.getMotivo()%>"
+                                        onclick="prellenarNombrePDF(this)">
                                     Editar
                                 </button>
 <!--<button type="button" class="btn btn-primary btn-sm btn-ver-pdf" data-ruta-pdf="<%= pqrs.getRutaPDF()%>">Ver PDF</button>-->
@@ -278,67 +279,204 @@
 
 
     </script>
-    <!-- Modal para editar una PQRS -->
-    <div class="modal fade" id="editarPQRSModal" tabindex="-1" role="dialog" aria-labelledby="editarPQRSModalLabel" aria-hidden="true">
-        <div class="modal-dialog draggable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editarPQRSModalLabel">Editar PQRS</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Formulario para editar la PQRS -->
-                    <form id="editarForm" action="EditarPQRSServlet" method="post">
-                        <!-- Campos ocultos para pasar los parámetros necesarios -->
-                        <input type="hidden" id="id" name="id">
-                        <div class="form-group">
-                            <label for="primerNombre">Primer Nombre:</label>
-                            <input type="text" class="form-control" id="primerNombre" name="primerNombre" required>
+   <!-- Modal para editar una PQRS -->
+<div class="modal fade" id="editarPQRSModal" tabindex="-1" role="dialog" aria-labelledby="editarPQRSModalLabel" aria-hidden="true">
+    <div class="modal-dialog draggable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarPQRSModalLabel">Editar PQRS</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para editar la PQRS -->
+                <form id="editarForm" action="EditarPQRSServlet" method="post" enctype="multipart/form-data" onsubmit="return validarFormulario()">
+                    <!-- Campos ocultos para pasar los parámetros necesarios -->
+                    <input type="hidden" id="id" name="id">
+                    
+                    <div class="form-group">
+                        <label for="primerNombre">Primer Nombre:</label>
+                        <input type="text" class="form-control required" id="primerNombre" name="primerNombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="segundoNombre">Segundo Nombre:</label>
+                        <input type="text" class="form-control" id="segundoNombre" name="segundoNombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="primerApellido">Primer Apellido:</label>
+                        <input type="text" class="form-control required" id="primerApellido" name="primerApellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="segundoApellido">Segundo Apellido:</label>
+                        <input type="text" class="form-control" id="segundoApellido" name="segundoApellido">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control required" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Teléfono:</label>
+                        <input type="text" class="form-control required" id="telefono" name="telefono" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mensaje">Mensaje:</label>
+                        <textarea class="form-control" id="mensaje" name="mensaje" rows="5" required></textarea>
+                    </div>
+                    <!-- Campo de carga de archivo PDF -->
+                    <div class="form-group mb-3">
+                        <label for="pdfFile">Adjuntar PDF (máximo 20 MB)</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="pdfFileName" readonly>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" onclick="cambiarPDF()">Cambiar PDF</button>
+                                <button class="btn btn-outline-danger" type="button" onclick="eliminarPDF()">Eliminar PDF</button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="segundoNombre">Segundo Nombre:</label>
-                            <input type="text" class="form-control" id="segundoNombre" name="segundoNombre">
-                        </div>
-                        <div class="form-group">
-                            <label for="primerApellido">Primer Apellido:</label>
-                            <input type="text" class="form-control" id="primerApellido" name="primerApellido" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="segundoApellido">Segundo Apellido:</label>
-                            <input type="text" class="form-control" id="segundoApellido" name="segundoApellido">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="telefono">Teléfono:</label>
-                            <input type="text" class="form-control" id="telefono" name="telefono" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="mensaje">Mensaje:</label>
-                            <textarea class="form-control" id="mensaje" name="mensaje" rows="5" required></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="motivo">Motivo:</label>
-                            <select class="form-control" id="motivo" name="motivo" required>
-                                <option value="Peticion">Petición</option>
-                                <option value="Queja">Queja</option>
-                                <option value="Reclamo">Reclamo</option>
-                                <option value="Sugerencia">Sugerencia</option>
-                            </select>
-                        </div>
-
-
-                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                    </form>
-                </div>
+                        <input type="file" class="form-control-file" id="pdfFile" name="pdfFile" accept=".pdf" style="display: none;" onchange="validarPDF(this)">
+                        <small id="pdfHelp" class="form-text text-muted">Por favor, seleccione un archivo PDF de máximo 20 MB.</small>
+                        <div id="pdfError" class="invalid-feedback">Solo se permiten archivos PDF.</div>
+                    </div>
+                    <!-- Fin del campo de carga de archivo PDF -->
+                    <div class="form-group">
+                        <label for="motivo">Motivo:</label>
+                        <select class="form-control" id="motivo" name="motivo" required>
+                            <option value="Peticion">Petición</option>
+                            <option value="Queja">Queja</option>
+                            <option value="Reclamo">Reclamo</option>
+                            <option value="Sugerencia">Sugerencia</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
+<script>
+    // Función para cambiar el PDF
+function cambiarPDF() {
+    var fileInput = document.getElementById('pdfFile');
+    fileInput.click();
+}
+
+// Evento cuando se selecciona un nuevo archivo PDF
+document.getElementById('pdfFile').addEventListener('change', function() {
+    if (this.files.length > 0) {
+        prellenarNombrePDF(); // Llama a la función para prellenar el nombre del PDF si se seleccionó un archivo
+    }
+});
+
+ function eliminarPDF() {
+    document.getElementById('pdfFileName').value = 'Eliminado'; // Establecer el nombre del PDF en blanco
+    document.getElementById('rutaPDF').innerText = 'Eliminado'; // Establecer "Eliminado" como el valor de rutaPDF en la tabla
+}
+
+// Función para abrir el modal de editar PQRS y prellenar el nombre del PDF
+function abrirModalEditar(btnEditar) {
+    // Mostrar el modal
+    $('#editarPQRSModal').modal('show');
+    
+    // Preenlar el nombre del PDF
+    prellenarNombrePDF(btnEditar);
+}
+
+// Función para prellenar el nombre del PDF
+function prellenarNombrePDF(btnEditar) {
+    // Obtener la fila correspondiente al botón "Editar" que se hizo clic
+    var fila = btnEditar.closest('tr');
+    // Obtener la celda con la ruta del PDF dentro de esa fila
+    var rutaPDFCell = fila.querySelector('.rutaPDF');
+    var pdfFilePath = rutaPDFCell.innerText.trim(); // Obtener el nombre del PDF de la celda
+    var pdfFileName = pdfFilePath.split('/').pop(); // Obtener solo el nombre del archivo
+    document.getElementById('pdfFileName').value = pdfFileName;
+}
+
+// Evento cuando se hace clic en el botón "Editar"
+$('.btn-editar').click(function() {
+    abrirModalEditar(this); // Pasar el botón "Editar" como argumento
+});
+
+// Evento cuando se selecciona un nuevo archivo PDF
+document.getElementById('pdfFile').addEventListener('change', function() {
+    prellenarNombrePDF(); // Llama a la función para prellenar el nombre del PDF
+});
+
+    // Evento cuando se muestra el modal de edición
+    $('#editarPQRSModal').on('shown.bs.modal', function (e) {
+        prellenarNombrePDF();
+    });
+</script>
+
+
+<script>
+    function validarFormulario() {
+        var inputs = document.querySelectorAll('.required');
+        var pdfFile = document.getElementById('pdfFile');
+        var mensaje = document.getElementById('mensaje').value.trim();
+
+        // Verificar si se proporciona un PDF o un mensaje
+        if (pdfFile.files.length === 0 && mensaje === '') {
+            alert('Debe adjuntar un archivo PDF o completar el campo de mensaje.');
+            return false;
+        }
+
+        // Si se proporciona un PDF, verificar si es un archivo PDF válido
+        if (pdfFile.files.length > 0) {
+            var isValidPDF = validarPDF(pdfFile);
+            if (!isValidPDF) {
+                return false;
+            }
+        }
+
+        // Validar campos de texto requeridos
+        var valid = true;
+        inputs.forEach(function (input) {
+            if (input.value.trim() === '') {
+                input.classList.add('is-invalid');
+                valid = false;
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+
+        return valid;
+    }
+
+    function toggleRequiredAttribute() {
+        var pdfFile = document.getElementById('pdfFile');
+        var mensajeInput = document.getElementById('mensaje');
+
+        // Si se selecciona un archivo PDF, el campo de mensaje no es obligatorio
+        if (pdfFile.files.length > 0) {
+            mensajeInput.removeAttribute('required');
+        } else {
+            mensajeInput.setAttribute('required', 'required');
+        }
+    }
+
+    // Validar PDF
+    function validarPDF(input) {
+        var file = input.files[0];
+        var fileSize = file.size / 1024 / 1024; // Tamaño en MB
+
+        if (file.type !== 'application/pdf') {
+            alert("El archivo seleccionado no es un PDF válido. Por favor, seleccione un archivo PDF.");
+            input.value = ''; // Limpiar el valor del input para que el usuario pueda seleccionar otro archivo
+            return false;
+        } else if (fileSize > 20) {
+            alert("El archivo seleccionado excede el tamaño máximo permitido (20 MB). Por favor, seleccione otro archivo.");
+            input.value = ''; // Limpiar el valor del input para que el usuario pueda seleccionar otro archivo
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    document.getElementById('pdfFile').addEventListener('change', toggleRequiredAttribute);
+</script>
+
     <!-- Script para validar y formatear campos -->
     <!-- Script para validar y formatear campos -->
     <script>

@@ -1,21 +1,28 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package Servlets;
 
 import com.mycompany.tutorial.ControladorPQRS;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
-import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Part;
+
 @WebServlet("/EditarPQRSServlet")
+@MultipartConfig(maxFileSize = 1024 * 1024 * 20) // Tamaño máximo de archivo: 20 MB
 public class EditarPQRSServlet extends HttpServlet {
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Obtener los parámetros del formulario
+        response.setContentType("text/html");
+        
+        // Obtener parámetros del formulario
         String idStr = request.getParameter("id");
         int id = Integer.parseInt(idStr);
         String primerNombre = request.getParameter("primerNombre");
@@ -25,15 +32,33 @@ public class EditarPQRSServlet extends HttpServlet {
         String email = request.getParameter("email");
         String telefono = request.getParameter("telefono");
         String mensaje = request.getParameter("mensaje");
-        String destinatario = request.getParameter("destinatario");
         String motivo = request.getParameter("motivo");
-        String mensajeRespuesta = request.getParameter("mensajeRespuesta");
+        
+        // Obtener el archivo PDF adjunto
+        Part filePart = request.getPart("pdfFile");
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        String filePath = null;
+
+        // Si se proporciona un archivo PDF, guardarlo en la carpeta del proyecto
+        if (filePart != null && filePart.getSize() > 0) {
+            filePath = getServletContext().getRealPath("/pdfs/") + File.separator + fileName;
+
+            // Guardar el archivo en la carpeta del proyecto
+            FileOutputStream outputStream = new FileOutputStream(new File(filePath));
+            InputStream fileContent = filePart.getInputStream();
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = fileContent.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+            outputStream.close();
+        }
 
         // Realizar operaciones para editar la PQRS en la base de datos o en el sistema
         ControladorPQRS controlador = new ControladorPQRS();
         boolean edicionExitosa = false;
         try {
-            controlador.editarPQRS(id, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje);
+            controlador.editarPQRS(id, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath);
             edicionExitosa = true;
         } catch (SQLException e) {
             e.printStackTrace();
