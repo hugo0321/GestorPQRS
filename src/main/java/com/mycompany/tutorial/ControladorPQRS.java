@@ -42,7 +42,7 @@ public class ControladorPQRS {
         try {
             conexion = getConexion(); // Implementa este método para obtener una conexión a la base de datos
             if (conexion != null) {
-                String sql = "INSERT INTO PQRS (PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Motivo, email, Telefono, Mensaje, RutaPDF, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO PQRS (PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, TipoPQRS, email, Telefono, Mensaje, RutaPDF, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 statement = conexion.prepareStatement(sql);
                 statement.setString(1, primerNombre);
                 statement.setString(2, segundoNombre);
@@ -88,69 +88,69 @@ public class ControladorPQRS {
         }
     }
 
-        /**
-     * Obtiene todas las PQRS con sus datos correspondientes, dándole prioridad
-     * a las de tipo "Petición".
-     *
-     * @return Lista de objetos PQRS.
-     * @throws SQLException Si ocurre un error de SQL al obtener las PQRS.
-     */
-    public List<PQRS> obtenerPQRS() throws SQLException {
-        List<PQRS> pqrsList = new ArrayList<>();
-        Connection conexion = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            conexion = getConexion();
-            if (conexion != null) {
-                String sql = "SELECT PQRS.*, Usuarios.nombre_usuario, Motivos.Motivo AS nombreMotivo "
-                        + "FROM PQRS "
-                        + "INNER JOIN Usuarios ON PQRS.usuario_id = Usuarios.id "
-                        + "INNER JOIN Motivos ON PQRS.Motivo = Motivos.id "
-                        + "ORDER BY CASE WHEN Motivos.Motivo = 'Petición' THEN 0 ELSE 1 END";
-                statement = conexion.prepareStatement(sql);
-                resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    PQRS pqrs = new PQRS();
-                    pqrs.setId(resultSet.getInt("id"));
-                    pqrs.setPrimerNombre(resultSet.getString("PrimerNombre"));
-                    pqrs.setSegundoNombre(resultSet.getString("SegundoNombre"));
-                    pqrs.setPrimerApellido(resultSet.getString("PrimerApellido"));
-                    pqrs.setSegundoApellido(resultSet.getString("SegundoApellido"));
-                    pqrs.setIdMotivo(resultSet.getInt("Motivo"));
-                    pqrs.setMotivoNombre(resultSet.getString("nombreMotivo"));
-                    pqrs.setEmail(resultSet.getString("email"));
-                    pqrs.setTelefono(resultSet.getString("Telefono"));
-                    pqrs.setMensaje(resultSet.getString("Mensaje"));
-                    pqrs.setHoraSolicitud(resultSet.getTimestamp("HoraSolicitud"));
-                    pqrs.setNombreUsuario(resultSet.getString("nombre_usuario"));
-                    pqrs.setRutaPDF(resultSet.getString("RutaPDF"));
-                    pqrs.setEstado(resultSet.getString("Estado"));
-                    pqrsList.add(pqrs);
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al obtener las PQRS: " + e.getMessage());
-            throw e;
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (statement != null) {
-                    statement.close();
-                }
-                if (conexion != null) {
-                    conexion.close();
-                }
-
-            } catch (SQLException ex) {
-                System.out.println("Error al cerrar la conexión: " + ex.getMessage());
-                ex.printStackTrace();
+     /**
+ * Obtiene todas las PQRS con sus datos correspondientes, dándole prioridad
+ * a las de tipo "Petición".
+ *
+ * @return Lista de objetos PQRS.
+ * @throws SQLException Si ocurre un error de SQL al obtener las PQRS.
+ */
+public List<PQRS> obtenerPQRS() throws SQLException {
+    List<PQRS> pqrsList = new ArrayList<>();
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            String sql = "SELECT PQRS.*, Usuarios.nombre_usuario, TipoPQRS.Motivo AS nombreMotivo "
+                    + "FROM PQRS "
+                    + "INNER JOIN Usuarios ON PQRS.usuario_id = Usuarios.id "
+                    + "INNER JOIN TipoPQRS ON PQRS.TipoPQRS = TipoPQRS.id " // Cambio de "Motivos" a "TipoPQRS"
+                    + "ORDER BY CASE WHEN TipoPQRS.Motivo = 'Petición' THEN 0 ELSE 1 END";
+            statement = conexion.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                PQRS pqrs = new PQRS();
+                pqrs.setId(resultSet.getInt("id"));
+                pqrs.setPrimerNombre(resultSet.getString("PrimerNombre"));
+                pqrs.setSegundoNombre(resultSet.getString("SegundoNombre"));
+                pqrs.setPrimerApellido(resultSet.getString("PrimerApellido"));
+                pqrs.setSegundoApellido(resultSet.getString("SegundoApellido"));
+                pqrs.setIdMotivo(resultSet.getInt("TipoPQRS")); // Cambio de "Motivo" a "TipoPQRS"
+                pqrs.setMotivoNombre(resultSet.getString("nombreMotivo"));
+                pqrs.setEmail(resultSet.getString("email"));
+                pqrs.setTelefono(resultSet.getString("Telefono"));
+                pqrs.setMensaje(resultSet.getString("Mensaje"));
+                pqrs.setHoraSolicitud(resultSet.getTimestamp("HoraSolicitud"));
+                pqrs.setNombreUsuario(resultSet.getString("nombre_usuario"));
+                pqrs.setRutaPDF(resultSet.getString("RutaPDF"));
+                pqrs.setEstado(resultSet.getString("Estado"));
+                pqrsList.add(pqrs);
             }
         }
-        return pqrsList;
+    } catch (SQLException e) {
+        System.out.println("Error al obtener las PQRS: " + e.getMessage());
+        throw e;
+    } finally {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Error al cerrar la conexión: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
+    return pqrsList;
+}
 
     /**
      * Verifica si ya existe una PQRS con los mismos datos para el mismo usuario
@@ -419,7 +419,7 @@ public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, St
             }
 
             // Consulta SQL para actualizar los datos de la PQRS
-            String sqlUpdate = "UPDATE PQRS SET PrimerNombre = ?, SegundoNombre = ?, PrimerApellido = ?, SegundoApellido = ?, Motivo = ?, email = ?, Telefono = ?, Mensaje = ?, RutaPDF = ? WHERE id = ?";
+            String sqlUpdate = "UPDATE PQRS SET PrimerNombre = ?, SegundoNombre = ?, PrimerApellido = ?, SegundoApellido = ?, TipoPQRS = ?, email = ?, Telefono = ?, Mensaje = ?, RutaPDF = ? WHERE id = ?";
             statement = conexion.prepareStatement(sqlUpdate);
             statement.setString(1, primerNombre);
             statement.setString(2, segundoNombre);
@@ -478,7 +478,7 @@ public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, St
         try {
             conexion = ConexionBaseDeDatos.getConexion(); // Implementa este método para obtener una conexión a la base de datos
             if (conexion != null) {
-                String sql = "SELECT * FROM gestordepqrs.motivos ORDER BY id ASC";
+                String sql = "SELECT * FROM gestordepqrs.TipoPQRS ORDER BY id ASC";
                 statement = conexion.prepareStatement(sql);
                 resultSet = statement.executeQuery();
                 while (resultSet.next()) {
@@ -521,7 +521,7 @@ public static String obtenerNombreMotivo(int idMotivo) throws SQLException {
     try {
         conexion = ConexionBaseDeDatos.getConexion(); // Implementa este método para obtener una conexión a la base de datos
         if (conexion != null) {
-            String sql = "SELECT Motivo FROM Motivos WHERE id = ?";
+            String sql = "SELECT Motivo FROM TipoPQRS WHERE id = ?";
             statement = conexion.prepareStatement(sql);
             statement.setInt(1, idMotivo);
             resultSet = statement.executeQuery();

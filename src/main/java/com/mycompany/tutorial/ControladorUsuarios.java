@@ -18,57 +18,56 @@ import java.util.List;
  */
 public class ControladorUsuarios {
 
-    /**
-     * Realiza el inicio de sesión de un usuario.
-     *
-     * @param nombreUsuario Nombre de usuario.
-     * @param contrasena Contraseña del usuario.
-     * @return Objeto Usuario si las credenciales son válidas, o null si no lo
-     * son.
-     */
-    public static Usuario login(String nombreUsuario, String contrasena) {
-        Connection conexion = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        Usuario usuario = null;
-        try {
-            conexion = getConexion();
-            if (conexion != null) {
-                String sql = "SELECT id, nombre_usuario, cedula FROM Usuarios WHERE nombre_usuario = ? AND contrasena = ?";
-                statement = conexion.prepareStatement(sql);
-                statement.setString(1, nombreUsuario);
-                statement.setString(2, contrasena);
-                resultSet = statement.executeQuery();
+ /**
+ * Autentica el inicio de sesión de un usuario y devuelve su rol.
+ *
+ * @param nombreUsuario Nombre de usuario.
+ * @param contrasena Contraseña del usuario.
+ * @return Rol del usuario: "Administrador" si las credenciales son válidas y el rol es "Administrador",
+ *         "Usuario Normal" si las credenciales son válidas y el rol es "Usuario Normal",
+ *         o null si las credenciales son inválidas o no se encuentra el usuario.
+ */
+public static String autenticarUsuario(String nombreUsuario, String contrasena) {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    String rolUsuario = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            String sql = "SELECT Roll FROM Usuarios WHERE nombre_usuario = ? AND contrasena = ?";
+            statement = conexion.prepareStatement(sql);
+            statement.setString(1, nombreUsuario);
+            statement.setString(2, contrasena);
+            resultSet = statement.executeQuery();
 
-                if (resultSet.next()) {
-                    // Si las credenciales son correctas, crea un objeto Usuario con los datos correspondientes
-                    usuario = new Usuario();
-                    usuario.setId(resultSet.getInt("id"));
-                    usuario.setNombreUsuario(resultSet.getString("nombre_usuario"));
-                    usuario.setCedula(resultSet.getString("cedula"));
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al realizar el login: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (statement != null) {
-                    statement.close();
-                }
-                if (conexion != null) {
-                    conexion.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println("Error al cerrar la conexión: " + ex.getMessage());
-                ex.printStackTrace();
+            if (resultSet.next()) {
+                // Si las credenciales son correctas, obtiene el rol del usuario
+                rolUsuario = resultSet.getString("Roll");
             }
         }
-        return usuario; // Devuelve el objeto Usuario, que puede ser null si el inicio de sesión falla
+    } catch (SQLException e) {
+        System.out.println("Error al autenticar el usuario: " + e.getMessage());
+        e.printStackTrace();
+    } finally {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error al cerrar la conexión: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
+    return rolUsuario; // Devuelve el rol del usuario, que puede ser null si las credenciales son inválidas
+}
+
 
     /**
      * Obtiene el ID de un usuario basado en su nombre de usuario.
@@ -142,6 +141,7 @@ public class ControladorUsuarios {
                     usuario.setCedula(resultSet.getString("cedula"));
                     usuario.setContrasena(resultSet.getString("contrasena"));
                     usuario.setEmailRegistro(resultSet.getString("emailRegistro"));
+                    usuario.setRollUsuario(resultSet.getString("Roll"));
                     usuarios.add(usuario);
                 }
             }
@@ -276,8 +276,8 @@ public class ControladorUsuarios {
     try {
         conexion = getConexion();
         if (conexion != null) {
-            String sql = "SELECT p.*, m.Motivo AS MotivoNombre FROM PQRS p JOIN Usuarios u ON p.usuario_id = u.id " +
-                         "JOIN Motivos m ON p.Motivo = m.id WHERE u.id = ?";
+            String sql = "SELECT p.*, tp.Motivo AS MotivoNombre FROM PQRS p JOIN Usuarios u ON p.usuario_id = u.id " +
+                         "JOIN TipoPQRS tp ON p.TipoPQRS = tp.id WHERE u.id = ?";
             statement = conexion.prepareStatement(sql);
             statement.setInt(1, usuarioId);
             resultSet = statement.executeQuery();
@@ -288,7 +288,7 @@ public class ControladorUsuarios {
                 pqrs.setSegundoNombre(resultSet.getString("SegundoNombre"));
                 pqrs.setPrimerApellido(resultSet.getString("PrimerApellido"));
                 pqrs.setSegundoApellido(resultSet.getString("SegundoApellido"));
-                pqrs.setIdMotivo(resultSet.getInt("Motivo"));
+                pqrs.setIdMotivo(resultSet.getInt("TipoPQRS"));
                 pqrs.setMotivoNombre(resultSet.getString("MotivoNombre"));
                 pqrs.setEmail(resultSet.getString("email"));
                 pqrs.setTelefono(resultSet.getString("Telefono"));
@@ -465,5 +465,94 @@ public class ControladorUsuarios {
         }
 
         return usuario; // Devuelve el objeto Usuario, que puede ser null si no se encuentra coincidencia
+    }
+     /**
+     * Cambia el rol de un usuario de "usuarioNormal" a "Administrador" o viceversa.
+     *
+     * @param id ID del usuario cuyo rol se desea cambiar.
+     * @throws SQLException Si ocurre un error de SQL durante la actualización.
+     */
+    public static void cambiarRolUsuario(int id) throws SQLException {
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        try {
+            conexion = getConexion();
+            if (conexion != null) {
+                // Obtener el rol actual del usuario
+                String rolActual = obtenerRolUsuario(id);
+
+                // Determinar el nuevo rol
+                String nuevoRol = "usuarioNormal";
+                if (rolActual.equals("usuarioNormal")) {
+                    nuevoRol = "Administrador";
+                }
+
+                // Actualizar el rol en la base de datos
+                String sql = "UPDATE Usuarios SET Roll = ? WHERE id = ?";
+                statement = conexion.prepareStatement(sql);
+                statement.setString(1, nuevoRol);
+                statement.setInt(2, id);
+
+                int filasActualizadas = statement.executeUpdate();
+                if (filasActualizadas > 0) {
+                    System.out.println("Rol de usuario actualizado correctamente.");
+                } else {
+                    System.out.println("No se pudo actualizar el rol de usuario.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al cambiar el rol de usuario: " + e.getMessage());
+            throw e;
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+        }
+    }
+
+    /**
+     * Obtiene el rol de un usuario basado en su ID.
+     *
+     * @param id ID del usuario.
+     * @return Rol del usuario.
+     * @throws SQLException Si ocurre un error de SQL al obtener el rol.
+     */
+    public static String obtenerRolUsuario(int id) throws SQLException {
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String rol = null; // Inicializamos el rol como null
+
+        try {
+            conexion = getConexion();
+            if (conexion != null) {
+                String sql = "SELECT Roll FROM Usuarios WHERE id = ?";
+                statement = conexion.prepareStatement(sql);
+                statement.setInt(1, id);
+                resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    rol = resultSet.getString("Roll");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener el rol de usuario: " + e.getMessage());
+            throw e;
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+        }
+
+        return rol;
     }
 }

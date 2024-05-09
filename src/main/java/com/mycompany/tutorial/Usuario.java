@@ -14,6 +14,7 @@ public class Usuario {
     private String cedula;
     private String contrasena;
     private String emailRegistro;
+    private String rollUsuario;
 
     // Constructor
     public Usuario() {
@@ -64,6 +65,14 @@ public String getEmailRegistro() {
 
 public void setEmailRegistro(String emailRegistro) {
     this.emailRegistro = emailRegistro;
+}
+//
+public String getRollUsuario() {
+    return rollUsuario;
+}
+
+public void setRollUsuario(String rollUsuario) {
+    this.rollUsuario = rollUsuario;
 }
 
     // toString para representación de la clase

@@ -378,7 +378,7 @@
                             <div id="pdfError" class="invalid-feedback">Solo se permiten archivos PDF.</div>
                         </div>
                         <!-- Fin del campo de carga de archivo PDF -->
-
+<input type="hidden" id="rutaPDFOriginal" name="rutaPDFOriginal">
 
 
                         <button type="submit" class="btn btn-primary">Guardar cambios</button>
@@ -431,7 +431,11 @@
             var rutaPDFCell = fila.querySelector('.rutaPDF');
             var pdfFilePath = rutaPDFCell.innerText.trim(); // Obtener el nombre del PDF de la celda
             var pdfFileName = pdfFilePath.split('/').pop(); // Obtener solo el nombre del archivo
+ // Obtener la rutaPDFOriginal
+    var rutaPDFOriginal = $('#pdfFileName').val();
 
+    // Establecer el valor de rutaPDFOriginal en el campo de entrada oculto
+    document.getElementById('rutaPDFOriginal').value = rutaPDFOriginal;
             // Verificar si no hay ningún archivo PDF seleccionado
             if (pdfFileName === 'Eliminado') {
                 // Usar la ruta del PDF original

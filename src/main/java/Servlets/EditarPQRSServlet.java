@@ -19,62 +19,64 @@ import javax.servlet.http.Part;
 @MultipartConfig(maxFileSize = 1024 * 1024 * 20) // Tamaño máximo de archivo: 20 MB
 public class EditarPQRSServlet extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
-        
-        // Obtener parámetros del formulario
-        String idStr = request.getParameter("id");
-        int id = Integer.parseInt(idStr);
-        String primerNombre = request.getParameter("primerNombre");
-        String segundoNombre = request.getParameter("segundoNombre");
-        String primerApellido = request.getParameter("primerApellido");
-        String segundoApellido = request.getParameter("segundoApellido");
-        String email = request.getParameter("email");
-        String telefono = request.getParameter("telefono");
-        String mensaje = request.getParameter("mensaje");
-        String motivo = request.getParameter("motivo");
-        
-        // Obtener el archivo PDF adjunto
-        Part filePart = request.getPart("pdfFile");
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        String filePath = null;
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    response.setContentType("text/html");
+    
+    // Obtener parámetros del formulario
+    String idStr = request.getParameter("id");
+    int id = Integer.parseInt(idStr);
+    String primerNombre = request.getParameter("primerNombre");
+    String segundoNombre = request.getParameter("segundoNombre");
+    String primerApellido = request.getParameter("primerApellido");
+    String segundoApellido = request.getParameter("segundoApellido");
+    String email = request.getParameter("email");
+    String telefono = request.getParameter("telefono");
+    String mensaje = request.getParameter("mensaje");
+    String motivo = request.getParameter("motivo");
+    String rutaPDF = request.getParameter("rutaPDFOriginal");
+    System.out.println("Ruta del archivo guardado: " + rutaPDF);
+    // Obtener el archivo PDF adjunto
+    Part filePart = request.getPart("pdfFile");
+    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+    String filePath = null;
 
-        // Si se proporciona un archivo PDF, guardarlo en la carpeta del proyecto
-        if (filePart != null && filePart.getSize() > 0) {
-            filePath = getServletContext().getRealPath("/pdfs/") + File.separator + fileName;
-             // Mostrar la ruta en la consola
-    System.out.println("Ruta del archivo guardado: " + filePath);
-
-
-            // Guardar el archivo en la carpeta del proyecto
-            FileOutputStream outputStream = new FileOutputStream(new File(filePath));
-            InputStream fileContent = filePart.getInputStream();
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = fileContent.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
-            }
-            outputStream.close();
+    // Si se proporciona un archivo PDF, guardarlo en la carpeta del proyecto
+    if (filePart != null && filePart.getSize() > 0) {
+        // Guardar el archivo en la carpeta del proyecto
+        filePath = getServletContext().getRealPath("/pdfs/") + File.separator + fileName;
+        FileOutputStream outputStream = new FileOutputStream(new File(filePath));
+        InputStream fileContent = filePart.getInputStream();
+        int read = 0;
+        byte[] bytes = new byte[1024];
+        while ((read = fileContent.read(bytes)) != -1) {
+            outputStream.write(bytes, 0, read);
         }
-
-        // Realizar operaciones para editar la PQRS en la base de datos o en el sistema
-        ControladorPQRS controlador = new ControladorPQRS();
-        boolean edicionExitosa = false;
-        try {
-            controlador.editarPQRS(id, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath);
-            edicionExitosa = true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        if (edicionExitosa) {
-            // Si la edición es exitosa, redirigir a ListadoPQRSUsuario.jsp
-            response.sendRedirect("ListadoPQRSUsuario.jsp");
-        } else {
-            // Si la edición falla, mostrar una ventana emergente con el mensaje de error y redirigir a ListadoPQRSUsuario.jsp
-            String errorMessage = "Hubo un error al editar la PQRS. Por favor, inténtelo de nuevo más tarde.";
-            response.getWriter().println("<script>alert('" + errorMessage + "');</script>");
-            response.setHeader("Refresh", "0; URL=ListadoPQRSUsuario.jsp");
+        outputStream.close();
+    } else {
+        // Si no se proporciona un archivo PDF pero hay una ruta PDF original, usar esa ruta
+        if (rutaPDF != null && !rutaPDF.isEmpty()) {
+            filePath = rutaPDF;
         }
     }
+
+    // Realizar operaciones para editar la PQRS en la base de datos o en el sistema
+    ControladorPQRS controlador = new ControladorPQRS();
+    boolean edicionExitosa = false;
+    try {
+        controlador.editarPQRS(id, primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath);
+        edicionExitosa = true;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    if (edicionExitosa) {
+        // Si la edición es exitosa, redirigir a ListadoPQRSUsuario.jsp
+        response.sendRedirect("ListadoPQRSUsuario.jsp");
+    } else {
+        // Si la edición falla, mostrar una ventana emergente con el mensaje de error y redirigir a ListadoPQRSUsuario.jsp
+        String errorMessage = "Hubo un error al editar la PQRS. Por favor, inténtelo de nuevo más tarde.";
+        response.getWriter().println("<script>alert('" + errorMessage + "');</script>");
+        response.setHeader("Refresh", "0; URL=ListadoPQRSUsuario.jsp");
+    }
+}
 }

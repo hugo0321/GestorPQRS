@@ -6,6 +6,7 @@ Servlets\EditarUsuarioServlet.class
 com\mycompany\tutorial\ControladorEmails$4.class
 com\mycompany\tutorial\ControladorUsuarios.class
 com\mycompany\tutorial\PQRS.class
+Servlets\CambiarRolServlet.class
 com\mycompany\tutorial\ConexionBaseDeDatos.class
 Servlets\RecuperarUsuarioServlet.class
 com\mycompany\tutorial\ControladorPQRS.class

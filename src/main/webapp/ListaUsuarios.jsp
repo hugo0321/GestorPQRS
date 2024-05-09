@@ -70,6 +70,23 @@
                     }
                 });
             });
+             $(document).ready(function() {
+        $(".btn-cambiar-rol").click(function() {
+            var idUsuario = $(this).data("id");
+
+            // Realizar una solicitud AJAX para llamar al servlet o endpoint correspondiente que maneje el cambio de rol
+            $.post("CambiarRolServlet", { idUsuario: idUsuario })
+                .done(function(response) {
+                    // Manejar la respuesta del servidor, por ejemplo, mostrar un mensaje de éxito o recargar la página
+                    alert("¡Rol cambiado exitosamente!");
+                    location.reload(); // Recargar la página para reflejar el cambio de rol
+                })
+                .fail(function(xhr, status, error) {
+                    // Manejar errores, por ejemplo, mostrar un mensaje de error
+                    alert("Error al cambiar el rol del usuario: " + xhr.responseText);
+                });
+        });
+    });
         </script>
     </head>
     <body>
@@ -83,6 +100,7 @@
                             <th>Nombre de Usuario</th>
                             <th>Cédula</th>
                             <th>Email de Registro</th>
+                            <th>Tipo Usuario</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -100,11 +118,12 @@
                             <td class="nombre-usuario"><%= usuario.getNombreUsuario()%></td>
                             <td class="cedula"><%= usuario.getCedula()%></td>
                             <td class="email-registro"><%= usuario.getEmailRegistro()%></td>
+                            <td class="email-registro"><%= usuario.getRollUsuario()%></td>
                             <td>
                                 <button class="btn btn-info btn-sm btn-visualizar">Visualizar</button>
                                 <button class="btn btn-warning btn-sm btn-editar">Editar</button>
                                 <button class="btn btn-danger btn-sm btn-eliminar" data-id="<%= usuario.getId()%>">Eliminar</button>
-
+                                <button class="btn btn-primary btn-sm btn-cambiar-rol" data-id="<%= usuario.getId()%>">Cambiar Rol</button>
                             </td>
                         </tr>
                         <%

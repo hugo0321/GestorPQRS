@@ -12,14 +12,13 @@
 
 <%
     HttpSession misession = request.getSession(false);
-    if (misession == null) {
+    if (misession == null || !"Administrador".equals((String) misession.getAttribute("rolUsuario"))) {
         response.sendRedirect("index.jsp");
-        return;
-    } else if (!"admin".equals((String) misession.getAttribute("username"))) {
-        response.sendRedirect("indexEntrada.jsp");
         return;
     }
 %>
+
+
 
 <!DOCTYPE html>
 <html lang="es">
