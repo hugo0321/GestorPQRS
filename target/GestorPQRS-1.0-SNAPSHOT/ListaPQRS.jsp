@@ -145,17 +145,17 @@
                             <td class="primerApellido"><%= pqrs.getPrimerApellido()%></td>
                             <td class="segundoApellido"><%= pqrs.getSegundoApellido()%></td>
 
-                            <td class="motivo"><%= pqrs.getMotivo()%></td>
+                            <td class="motivo"><%= pqrs.getMotivoNombre() %></td>
                             <td class="email"><%= pqrs.getEmail()%></td>
                             <td class="telefono"><%= pqrs.getTelefono()%></td>
-                            <td class="mensaje"><%= pqrs.getMensaje()%></td>
-                            <td class="rutaPDF"><%= pqrs.getRutaPDF()%></td>
+                            <td class="mensaje"><%= pqrs.getMensaje() != null ? pqrs.getMensaje() : "No se escribió un mensaje" %></td>
+                            <td class="rutaPDF"><%= pqrs.getRutaPDF() != null ? pqrs.getRutaPDF() : "No se cargó ningún documento" %></td>
                             <td class="horaSolicitud"><%= pqrs.getHoraSolicitud()%></td>                 
                             <td class="estado"><%= pqrs.getEstado()%></td>
                             <td>
                                 <button type="button" class="btn btn-info btn-sm btn-visualizar">Visualizar</button>
                                 <button type="button" class="btn btn-danger btn-sm btn-eliminar" data-id="<%= pqrs.getId()%>">Eliminar</button>
-                                <button type="button" class="btn btn-success btn-sm btn-responder" data-toggle="modal" data-target="#responderPQRSModal" data-email="<%= pqrs.getEmail()%>" data-motivo="<%= pqrs.getMotivo()%>">
+                                <button type="button" class="btn btn-success btn-sm btn-responder" data-toggle="modal" data-target="#responderPQRSModal" data-email="<%= pqrs.getEmail()%>" data-motivo="<%= pqrs.getIdMotivo()%>">
                                     Responder
                                 </button>
 

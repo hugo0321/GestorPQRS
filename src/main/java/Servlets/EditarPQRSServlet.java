@@ -42,6 +42,9 @@ public class EditarPQRSServlet extends HttpServlet {
         // Si se proporciona un archivo PDF, guardarlo en la carpeta del proyecto
         if (filePart != null && filePart.getSize() > 0) {
             filePath = getServletContext().getRealPath("/pdfs/") + File.separator + fileName;
+             // Mostrar la ruta en la consola
+    System.out.println("Ruta del archivo guardado: " + filePath);
+
 
             // Guardar el archivo en la carpeta del proyecto
             FileOutputStream outputStream = new FileOutputStream(new File(filePath));

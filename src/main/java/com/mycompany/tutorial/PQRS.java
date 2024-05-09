@@ -4,7 +4,6 @@
  */
 package com.mycompany.tutorial;
 
-import java.sql.Timestamp;
 
 /**
  *
@@ -18,20 +17,19 @@ public class PQRS {
     private String segundoNombre;
     private String primerApellido;
     private String segundoApellido;
-    private String motivo;
+    private String motivoNombre;
+    private int idMotivo;
     private String email;
     private String telefono;
     private String mensaje;
-    private String rutaPDF; // Nuevo atributo
+    private String rutaPDF;
     private Timestamp horaSolicitud;
-    private String nombreUsuario; // Nuevo atributo
-    private String estado; // Nuevo atributo
+    private String nombreUsuario;
+    private String estado;
 
-    // Constructor
     public PQRS() {
     }
 
-    // Getters y Setters
     public int getId() {
         return id;
     }
@@ -72,12 +70,20 @@ public class PQRS {
         this.segundoApellido = segundoApellido;
     }
 
-    public String getMotivo() {
-        return motivo;
+    public String getMotivoNombre() {
+        return motivoNombre;
     }
 
-    public void setMotivo(String motivo) {
-        this.motivo = motivo;
+    public void setMotivoNombre(String motivoNombre) {
+        this.motivoNombre = motivoNombre;
+    }
+
+    public int getIdMotivo() {
+        return idMotivo;
+    }
+
+    public void setIdMotivo(int idMotivo) {
+        this.idMotivo = idMotivo;
     }
 
     public String getEmail() {
@@ -119,14 +125,16 @@ public class PQRS {
     public void setHoraSolicitud(Timestamp horaSolicitud) {
         this.horaSolicitud = horaSolicitud;
     }
-        public String getNombreUsuario() {
+
+    public String getNombreUsuario() {
         return nombreUsuario;
     }
 
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
     }
-      public String getEstado() {
+
+    public String getEstado() {
         return estado;
     }
 

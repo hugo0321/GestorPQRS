@@ -268,56 +268,59 @@ public class ControladorUsuarios {
      * @throws SQLException Si ocurre un error de SQL al obtener las PQRS del
      * usuario.
      */
-    public List<PQRS> obtenerPQRSUsuario(int usuarioId) throws SQLException {
-        List<PQRS> pqrsList = new ArrayList<>();
-        Connection conexion = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            conexion = getConexion();
-            if (conexion != null) {
-                String sql = "SELECT p.* FROM PQRS p JOIN Usuarios u ON p.usuario_id = u.id WHERE u.id = ?";
-                statement = conexion.prepareStatement(sql);
-                statement.setInt(1, usuarioId);
-                resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    PQRS pqrs = new PQRS();
-                    pqrs.setId(resultSet.getInt("id"));
-                    pqrs.setPrimerNombre(resultSet.getString("PrimerNombre"));
-                    pqrs.setSegundoNombre(resultSet.getString("SegundoNombre"));
-                    pqrs.setPrimerApellido(resultSet.getString("PrimerApellido"));
-                    pqrs.setSegundoApellido(resultSet.getString("SegundoApellido"));
-                    pqrs.setMotivo(resultSet.getString("Motivo"));
-                    pqrs.setEmail(resultSet.getString("email"));
-                    pqrs.setTelefono(resultSet.getString("Telefono"));
-                    pqrs.setMensaje(resultSet.getString("Mensaje"));
-                    pqrs.setHoraSolicitud(resultSet.getTimestamp("HoraSolicitud"));
-                    pqrs.setRutaPDF(resultSet.getString("RutaPDF"));
-                    pqrs.setEstado(resultSet.getString("Estado"));
-                    pqrsList.add(pqrs);
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al obtener las PQRS del usuario: " + e.getMessage());
-            throw e;
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (statement != null) {
-                    statement.close();
-                }
-                if (conexion != null) {
-                    conexion.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println("Error al cerrar la conexión: " + ex.getMessage());
-                ex.printStackTrace();
+   public List<PQRS> obtenerPQRSUsuario(int usuarioId) throws SQLException {
+    List<PQRS> pqrsList = new ArrayList<>();
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    try {
+        conexion = getConexion();
+        if (conexion != null) {
+            String sql = "SELECT p.*, m.Motivo AS MotivoNombre FROM PQRS p JOIN Usuarios u ON p.usuario_id = u.id " +
+                         "JOIN Motivos m ON p.Motivo = m.id WHERE u.id = ?";
+            statement = conexion.prepareStatement(sql);
+            statement.setInt(1, usuarioId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                PQRS pqrs = new PQRS();
+                pqrs.setId(resultSet.getInt("id"));
+                pqrs.setPrimerNombre(resultSet.getString("PrimerNombre"));
+                pqrs.setSegundoNombre(resultSet.getString("SegundoNombre"));
+                pqrs.setPrimerApellido(resultSet.getString("PrimerApellido"));
+                pqrs.setSegundoApellido(resultSet.getString("SegundoApellido"));
+                pqrs.setIdMotivo(resultSet.getInt("Motivo"));
+                pqrs.setMotivoNombre(resultSet.getString("MotivoNombre"));
+                pqrs.setEmail(resultSet.getString("email"));
+                pqrs.setTelefono(resultSet.getString("Telefono"));
+                pqrs.setMensaje(resultSet.getString("Mensaje"));
+                pqrs.setHoraSolicitud(resultSet.getTimestamp("HoraSolicitud"));
+                pqrs.setRutaPDF(resultSet.getString("RutaPDF"));
+                pqrs.setEstado(resultSet.getString("Estado"));
+                pqrsList.add(pqrs);
             }
         }
-        return pqrsList;
+    } catch (SQLException e) {
+        System.out.println("Error al obtener las PQRS del usuario: " + e.getMessage());
+        throw e;
+    } finally {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error al cerrar la conexión: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
+    return pqrsList;
+}
+
 
     /**
      * Edita los datos de un usuario en la base de datos.

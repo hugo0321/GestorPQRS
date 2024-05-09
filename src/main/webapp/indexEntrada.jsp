@@ -4,6 +4,11 @@
     Author     : Hugo
 --%>
 
+<%@page import="com.mycompany.tutorial.Motivo"%>
+<%@page import="java.util.List"%>
+<%@page import="java.sql.SQLException"%>
+<%@page import="com.mycompany.tutorial.ControladorPQRS"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="com.mycompany.tutorial.ConexionBaseDeDatos"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
@@ -252,14 +257,25 @@
                                 <label for="segundoApellido">Segundo Apellido (Opcional)</label>
                             </div>
 
+
+
+                            <%
+                                List<Motivo> motivos = null;
+                                try {
+                                    motivos = ControladorPQRS.obtenerMotivos();
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                            %>
+
                             <!-- Motivo select -->
                             <div class="form-floating mb-3">
                                 <select class="form-select required" id="motivo" name="motivo">
                                     <option value="">Selecciona un motivo...</option>
-                                    <option value="Peticion">Petición</option>
-                                    <option value="Queja">Queja</option>
-                                    <option value="Reclamo">Reclamo</option>
-                                    <option value="Sugerencia">Sugerencia</option>
+                                    <!-- Iterar sobre la lista de motivos y generar opciones -->
+                                    <% for (Motivo motivo : motivos) {%>
+                                    <option value="<%= motivo.getIdMotivo()%>"><%= motivo.getNombreMotivo()%></option>
+                                    <% }%>
                                 </select>
                                 <label for="motivo">Motivo</label>
                             </div>

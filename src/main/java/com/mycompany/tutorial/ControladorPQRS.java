@@ -20,27 +20,27 @@ import java.util.List;
  */
 public class ControladorPQRS {
 
-    /**
+       /**
      * Inserta una nueva PQRS (Petición, Queja, Reclamo, Sugerencia) en la base
      * de datos.
      *
-     * @param primerNombre Primer nombre del remitente.
-     * @param segundoNombre Segundo nombre del remitente.
-     * @param primerApellido Primer apellido del remitente.
-     * @param segundoApellido Segundo apellido del remitente.
-     * @param motivo Motivo de la PQRS.
-     * @param email Dirección de correo electrónico del remitente.
-     * @param telefono Número de teléfono del remitente.
-     * @param mensaje Mensaje adicional (opcional).
-     * @param rutaPDF Ruta del archivo PDF adjunto (opcional).
-     * @param usuario_id ID del usuario asociado a la PQRS.
+     * @param primerNombre     Primer nombre del remitente.
+     * @param segundoNombre    Segundo nombre del remitente.
+     * @param primerApellido   Primer apellido del remitente.
+     * @param segundoApellido  Segundo apellido del remitente.
+     * @param motivo           Motivo de la PQRS.
+     * @param email            Dirección de correo electrónico del remitente.
+     * @param telefono         Número de teléfono del remitente.
+     * @param mensaje          Mensaje adicional (opcional).
+     * @param rutaPDF          Ruta del archivo PDF adjunto (opcional).
+     * @param usuario_id       ID del usuario asociado a la PQRS.
      * @throws SQLException Si ocurre un error de SQL durante la inserción.
      */
-    public static void insertarPQRS(String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String email, String telefono, String mensaje, String rutaPDF, int usuario_id) throws SQLException {
+    public static void insertarPQRS(String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, int motivo, String email, String telefono, String mensaje, String rutaPDF, int usuario_id) throws SQLException {
         Connection conexion = null;
         PreparedStatement statement = null;
         try {
-            conexion = getConexion();
+            conexion = getConexion(); // Implementa este método para obtener una conexión a la base de datos
             if (conexion != null) {
                 String sql = "INSERT INTO PQRS (PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, Motivo, email, Telefono, Mensaje, RutaPDF, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 statement = conexion.prepareStatement(sql);
@@ -48,7 +48,7 @@ public class ControladorPQRS {
                 statement.setString(2, segundoNombre);
                 statement.setString(3, primerApellido);
                 statement.setString(4, segundoApellido);
-                statement.setString(5, motivo);
+                statement.setInt(5, motivo);
                 statement.setString(6, email);
                 statement.setString(7, telefono);
 
@@ -74,7 +74,6 @@ public class ControladorPQRS {
                 } else {
                     System.out.println("No se pudo insertar la PQRS.");
                 }
-
             }
         } catch (SQLException e) {
             System.out.println("Error al insertar la PQRS: " + e.getMessage());
@@ -89,7 +88,7 @@ public class ControladorPQRS {
         }
     }
 
-    /**
+        /**
      * Obtiene todas las PQRS con sus datos correspondientes, dándole prioridad
      * a las de tipo "Petición".
      *
@@ -104,10 +103,11 @@ public class ControladorPQRS {
         try {
             conexion = getConexion();
             if (conexion != null) {
-                String sql = "SELECT PQRS.*, Usuarios.nombre_usuario "
+                String sql = "SELECT PQRS.*, Usuarios.nombre_usuario, Motivos.Motivo AS nombreMotivo "
                         + "FROM PQRS "
                         + "INNER JOIN Usuarios ON PQRS.usuario_id = Usuarios.id "
-                        + "ORDER BY CASE WHEN Motivo = 'Petición' THEN 0 ELSE 1 END";
+                        + "INNER JOIN Motivos ON PQRS.Motivo = Motivos.id "
+                        + "ORDER BY CASE WHEN Motivos.Motivo = 'Petición' THEN 0 ELSE 1 END";
                 statement = conexion.prepareStatement(sql);
                 resultSet = statement.executeQuery();
                 while (resultSet.next()) {
@@ -117,14 +117,15 @@ public class ControladorPQRS {
                     pqrs.setSegundoNombre(resultSet.getString("SegundoNombre"));
                     pqrs.setPrimerApellido(resultSet.getString("PrimerApellido"));
                     pqrs.setSegundoApellido(resultSet.getString("SegundoApellido"));
-                    pqrs.setMotivo(resultSet.getString("Motivo"));
+                    pqrs.setIdMotivo(resultSet.getInt("Motivo"));
+                    pqrs.setMotivoNombre(resultSet.getString("nombreMotivo"));
                     pqrs.setEmail(resultSet.getString("email"));
                     pqrs.setTelefono(resultSet.getString("Telefono"));
                     pqrs.setMensaje(resultSet.getString("Mensaje"));
                     pqrs.setHoraSolicitud(resultSet.getTimestamp("HoraSolicitud"));
                     pqrs.setNombreUsuario(resultSet.getString("nombre_usuario"));
-                    pqrs.setRutaPDF(resultSet.getString("RutaPDF")); // Agregamos la ruta PDF
-                    pqrs.setEstado(resultSet.getString("Estado")); // Agregamos el Estado
+                    pqrs.setRutaPDF(resultSet.getString("RutaPDF"));
+                    pqrs.setEstado(resultSet.getString("Estado"));
                     pqrsList.add(pqrs);
                 }
             }
@@ -169,7 +170,7 @@ public class ControladorPQRS {
      * @throws SQLException Si ocurre un error de SQL al verificar la
      * existencia.
      */
-    public static boolean existePQRS(int usuarioId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String email, String telefono, String mensaje, String rutaPDF) throws SQLException {
+    public static boolean existePQRS(int usuarioId, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, int motivo, String email, String telefono, String mensaje, String rutaPDF) throws SQLException {
         Connection conexion = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -186,7 +187,7 @@ public class ControladorPQRS {
                 statement.setString(3, segundoNombre);
                 statement.setString(4, primerApellido);
                 statement.setString(5, segundoApellido);
-                statement.setString(6, motivo);
+                 statement.setInt(6, motivo);
                 statement.setString(7, email);
                 statement.setString(8, telefono);
                 statement.setString(9, mensaje);
@@ -461,6 +462,90 @@ public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, St
             conexion.close();
         }
     }
+}
+    /**
+     * Obtiene todos los motivos de PQRS almacenados en la base de datos.
+     *
+     * @return Lista de objetos Motivo.
+     * @throws SQLException Si ocurre un error de SQL al obtener los motivos.
+     */
+    public static List<Motivo> obtenerMotivos() throws SQLException {
+        List<Motivo> motivosList = new ArrayList<>();
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            conexion = ConexionBaseDeDatos.getConexion(); // Implementa este método para obtener una conexión a la base de datos
+            if (conexion != null) {
+                String sql = "SELECT * FROM gestordepqrs.motivos ORDER BY id ASC";
+                statement = conexion.prepareStatement(sql);
+                resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    int idMotivo = resultSet.getInt("id");
+                    String nombreMotivo = resultSet.getString("Motivo");
+                    Motivo motivo = new Motivo(idMotivo, nombreMotivo);
+                    motivosList.add(motivo);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener los motivos de PQRS: " + e.getMessage());
+            throw e;
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
+        }
+
+        return motivosList;
+    }
+/**
+ * Obtiene el nombre del motivo basado en su ID.
+ *
+ * @param idMotivo ID del motivo.
+ * @return Nombre del motivo, o null si no se encuentra.
+ * @throws SQLException Si ocurre un error de SQL al obtener el nombre del motivo.
+ */
+public static String obtenerNombreMotivo(int idMotivo) throws SQLException {
+    Connection conexion = null;
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    String nombreMotivo = null;
+
+    try {
+        conexion = ConexionBaseDeDatos.getConexion(); // Implementa este método para obtener una conexión a la base de datos
+        if (conexion != null) {
+            String sql = "SELECT Motivo FROM Motivos WHERE id = ?";
+            statement = conexion.prepareStatement(sql);
+            statement.setInt(1, idMotivo);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                nombreMotivo = resultSet.getString("Motivo");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al obtener el nombre del motivo: " + e.getMessage());
+        throw e;
+    } finally {
+        // Cierre de recursos
+        if (resultSet != null) {
+            resultSet.close();
+        }
+        if (statement != null) {
+            statement.close();
+        }
+        if (conexion != null) {
+            conexion.close();
+        }
+    }
+
+    return nombreMotivo;
 }
 
 }
