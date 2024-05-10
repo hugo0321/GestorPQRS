@@ -18,6 +18,13 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
         <!-- Custom CSS -->
         <style>
+            /* Estilos personalizados */
+.navbar-text {
+    color: #ffffff; /* Cambia el color del texto del nombre del administrador a blanco */
+    font-size: 1rem; /* Ajusta el tamaño del texto del nombre del administrador */
+    margin-right: 20px; /* Añade un margen derecho entre el nombre del administrador y el botón de cerrar sesión */
+}
+
             .navbar {
                 background-color: #343a40; /* Cambia el color de fondo del navbar */
             }
@@ -84,7 +91,19 @@
                             <a class="nav-link" href="#">Pricing</a>
                         </li>
                     </ul>
-
+ <!-- Mostrar nombre del administrador -->
+<li class="nav-item">
+    <span class="navbar-text text-white"> <!-- Agregamos la clase text-white para hacer que el texto sea blanco -->
+        <% HttpSession laSesion = request.getSession(false);
+            if (laSesion != null && laSesion.getAttribute("username") != null) {
+                String username = (String) laSesion.getAttribute("username");
+        %>
+        Bienvenido, <%= username%>!
+        <% } else { %>
+        No se ha iniciado sesión
+        <% } %>
+    </span>
+</li>
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
                             <form action="CerrarSesionServlet" method="post">

@@ -40,6 +40,7 @@ public class RegistroServlet extends HttpServlet {
                 // Verificar si ya existe un usuario con el mismo nombre de usuario, cédula o correo electrónico
                 boolean existeUsuario = ControladorUsuarios.existeUsuario(nombreUsuario, cedula, email);
                 if (existeUsuario) {
+                    request.setAttribute("email", email);
                     request.setAttribute("mensaje", "Ya existe un usuario con el mismo nombre de usuario, cédula o correo electrónico.");
                     request.getRequestDispatcher("RegistroExitosoUsuario.jsp").forward(request, response);
                     return;
@@ -52,7 +53,7 @@ public class RegistroServlet extends HttpServlet {
                 ControladorEmails.enviarRegistroExitoso(email, nombreUsuario, cedula, contrasena, email);
 
                 // Establecer mensaje de éxito
-               // request.setAttribute("mensaje", "¡Registro exitoso! Se ha enviado un correo con los detalles de la cuenta.");
+               //request.setAttribute("mensaje", "¡Registro exitoso! Se ha enviado un correo a "+email+" con los detalles de la cuenta.");
                 request.getRequestDispatcher("RegistroconExito.jsp").forward(request, response);
             } catch (SQLException e) {
                 // Manejar cualquier error de la base de datos

@@ -24,7 +24,7 @@ public class InsertarPQRSServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
-        
+
         // Obtener parámetros del formulario
         String primerNombre = request.getParameter("primerNombre");
         String segundoNombre = request.getParameter("segundoNombre");
@@ -34,11 +34,11 @@ public class InsertarPQRSServlet extends HttpServlet {
         String email = request.getParameter("email");
         String telefono = request.getParameter("telefono");
         String mensaje = request.getParameter("mensaje");
-        
+
         // Obtener el usuario_id de la sesión
         HttpSession session = request.getSession();
         int usuarioId = 0; // Inicializamos el usuarioId
-        
+
         if (session.getAttribute("username") != null) {
             // Si hay una sesión iniciada, obtener el ID de usuario de la sesión
             String nombreUsuario = (String) session.getAttribute("username");
@@ -56,11 +56,29 @@ public class InsertarPQRSServlet extends HttpServlet {
         // Obtener el archivo PDF
         Part filePart = request.getPart("pdfFile");
         String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // Nombre del archivo
-        String filePath = null; // Inicializar la ruta del archivo en el servidor
-        
+        String extension = fileName.substring(fileName.lastIndexOf(".")); // Obtenemos la extensión del archivo original
+
+        // Obtener el nombre del motivo
+        String motivoNombre = null;
+        try {
+            motivoNombre = ControladorPQRS.obtenerNombreMotivo(motivo);
+        } catch (SQLException e) {
+            // Manejar la excepción aquí
+            e.printStackTrace();
+            // Redirigir a una página de error o mostrar un mensaje al usuario
+            response.sendRedirect("ErrorObtenerMotivo.jsp");
+            return;
+        }
+
+        // Construir el nuevo nombre del archivo PDF
+        String nuevoNombreArchivo = motivoNombre + "_" + primerNombre + "_" + usuarioId + extension;
+
+        // Inicializar la ruta del archivo en el servidor
+        String filePath = null;
+
         // Si se proporciona un archivo PDF, guardarlo en la carpeta del proyecto
         if (filePart != null && filePart.getSize() > 0) {
-            filePath = getServletContext().getRealPath("/pdfs/") + File.separator + fileName; // Ruta del archivo en el servidor
+            filePath = getServletContext().getRealPath("/pdfs/") + File.separator + nuevoNombreArchivo; // Ruta del archivo en el servidor
 
             // Guardar el archivo en la carpeta del proyecto
             FileOutputStream outputStream = new FileOutputStream(new File(filePath));
@@ -90,8 +108,6 @@ public class InsertarPQRSServlet extends HttpServlet {
 
         // Insertar la PQRS en la base de datos con la ruta del archivo y el usuario_id
         try {
-            String motivoNombre ="";
-            motivoNombre=ControladorPQRS.obtenerNombreMotivo(motivo);
             ControladorPQRS.insertarPQRS(primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath, usuarioId);
             // Envía el correo electrónico al usuario
             ControladorEmails.enviarCorreoRegistroExitoso(email, primerNombre, segundoNombre, primerApellido, segundoApellido, motivoNombre, email, telefono, mensaje);

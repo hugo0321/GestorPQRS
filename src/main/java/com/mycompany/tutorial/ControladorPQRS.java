@@ -20,20 +20,20 @@ import java.util.List;
  */
 public class ControladorPQRS {
 
-       /**
+    /**
      * Inserta una nueva PQRS (Petición, Queja, Reclamo, Sugerencia) en la base
      * de datos.
      *
-     * @param primerNombre     Primer nombre del remitente.
-     * @param segundoNombre    Segundo nombre del remitente.
-     * @param primerApellido   Primer apellido del remitente.
-     * @param segundoApellido  Segundo apellido del remitente.
-     * @param motivo           Motivo de la PQRS.
-     * @param email            Dirección de correo electrónico del remitente.
-     * @param telefono         Número de teléfono del remitente.
-     * @param mensaje          Mensaje adicional (opcional).
-     * @param rutaPDF          Ruta del archivo PDF adjunto (opcional).
-     * @param usuario_id       ID del usuario asociado a la PQRS.
+     * @param primerNombre Primer nombre del remitente.
+     * @param segundoNombre Segundo nombre del remitente.
+     * @param primerApellido Primer apellido del remitente.
+     * @param segundoApellido Segundo apellido del remitente.
+     * @param motivo Motivo de la PQRS.
+     * @param email Dirección de correo electrónico del remitente.
+     * @param telefono Número de teléfono del remitente.
+     * @param mensaje Mensaje adicional (opcional).
+     * @param rutaPDF Ruta del archivo PDF adjunto (opcional).
+     * @param usuario_id ID del usuario asociado a la PQRS.
      * @throws SQLException Si ocurre un error de SQL durante la inserción.
      */
     public static void insertarPQRS(String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, int motivo, String email, String telefono, String mensaje, String rutaPDF, int usuario_id) throws SQLException {
@@ -88,69 +88,69 @@ public class ControladorPQRS {
         }
     }
 
-     /**
- * Obtiene todas las PQRS con sus datos correspondientes, dándole prioridad
- * a las de tipo "Petición".
- *
- * @return Lista de objetos PQRS.
- * @throws SQLException Si ocurre un error de SQL al obtener las PQRS.
- */
-public List<PQRS> obtenerPQRS() throws SQLException {
-    List<PQRS> pqrsList = new ArrayList<>();
-    Connection conexion = null;
-    PreparedStatement statement = null;
-    ResultSet resultSet = null;
-    try {
-        conexion = getConexion();
-        if (conexion != null) {
-            String sql = "SELECT PQRS.*, Usuarios.nombre_usuario, TipoPQRS.Motivo AS nombreMotivo "
-                    + "FROM PQRS "
-                    + "INNER JOIN Usuarios ON PQRS.usuario_id = Usuarios.id "
-                    + "INNER JOIN TipoPQRS ON PQRS.TipoPQRS = TipoPQRS.id " // Cambio de "Motivos" a "TipoPQRS"
-                    + "ORDER BY CASE WHEN TipoPQRS.Motivo = 'Petición' THEN 0 ELSE 1 END";
-            statement = conexion.prepareStatement(sql);
-            resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                PQRS pqrs = new PQRS();
-                pqrs.setId(resultSet.getInt("id"));
-                pqrs.setPrimerNombre(resultSet.getString("PrimerNombre"));
-                pqrs.setSegundoNombre(resultSet.getString("SegundoNombre"));
-                pqrs.setPrimerApellido(resultSet.getString("PrimerApellido"));
-                pqrs.setSegundoApellido(resultSet.getString("SegundoApellido"));
-                pqrs.setIdMotivo(resultSet.getInt("TipoPQRS")); // Cambio de "Motivo" a "TipoPQRS"
-                pqrs.setMotivoNombre(resultSet.getString("nombreMotivo"));
-                pqrs.setEmail(resultSet.getString("email"));
-                pqrs.setTelefono(resultSet.getString("Telefono"));
-                pqrs.setMensaje(resultSet.getString("Mensaje"));
-                pqrs.setHoraSolicitud(resultSet.getTimestamp("HoraSolicitud"));
-                pqrs.setNombreUsuario(resultSet.getString("nombre_usuario"));
-                pqrs.setRutaPDF(resultSet.getString("RutaPDF"));
-                pqrs.setEstado(resultSet.getString("Estado"));
-                pqrsList.add(pqrs);
-            }
-        }
-    } catch (SQLException e) {
-        System.out.println("Error al obtener las PQRS: " + e.getMessage());
-        throw e;
-    } finally {
+    /**
+     * Obtiene todas las PQRS con sus datos correspondientes, dándole prioridad
+     * a las de tipo "Petición".
+     *
+     * @return Lista de objetos PQRS.
+     * @throws SQLException Si ocurre un error de SQL al obtener las PQRS.
+     */
+    public List<PQRS> obtenerPQRS() throws SQLException {
+        List<PQRS> pqrsList = new ArrayList<>();
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
-            if (resultSet != null) {
-                resultSet.close();
-            }
-            if (statement != null) {
-                statement.close();
-            }
+            conexion = getConexion();
             if (conexion != null) {
-                conexion.close();
+                String sql = "SELECT PQRS.*, Usuarios.nombre_usuario, TipoPQRS.Motivo AS nombreMotivo "
+                        + "FROM PQRS "
+                        + "INNER JOIN Usuarios ON PQRS.usuario_id = Usuarios.id "
+                        + "INNER JOIN TipoPQRS ON PQRS.TipoPQRS = TipoPQRS.id " // Cambio de "Motivos" a "TipoPQRS"
+                        + "ORDER BY CASE WHEN TipoPQRS.Motivo = 'Petición' THEN 0 ELSE 1 END";
+                statement = conexion.prepareStatement(sql);
+                resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    PQRS pqrs = new PQRS();
+                    pqrs.setId(resultSet.getInt("id"));
+                    pqrs.setPrimerNombre(resultSet.getString("PrimerNombre"));
+                    pqrs.setSegundoNombre(resultSet.getString("SegundoNombre"));
+                    pqrs.setPrimerApellido(resultSet.getString("PrimerApellido"));
+                    pqrs.setSegundoApellido(resultSet.getString("SegundoApellido"));
+                    pqrs.setIdMotivo(resultSet.getInt("TipoPQRS")); // Cambio de "Motivo" a "TipoPQRS"
+                    pqrs.setMotivoNombre(resultSet.getString("nombreMotivo"));
+                    pqrs.setEmail(resultSet.getString("email"));
+                    pqrs.setTelefono(resultSet.getString("Telefono"));
+                    pqrs.setMensaje(resultSet.getString("Mensaje"));
+                    pqrs.setHoraSolicitud(resultSet.getTimestamp("HoraSolicitud"));
+                    pqrs.setNombreUsuario(resultSet.getString("nombre_usuario"));
+                    pqrs.setRutaPDF(resultSet.getString("RutaPDF"));
+                    pqrs.setEstado(resultSet.getString("Estado"));
+                    pqrsList.add(pqrs);
+                }
             }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener las PQRS: " + e.getMessage());
+            throw e;
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (conexion != null) {
+                    conexion.close();
+                }
 
-        } catch (SQLException ex) {
-            System.out.println("Error al cerrar la conexión: " + ex.getMessage());
-            ex.printStackTrace();
+            } catch (SQLException ex) {
+                System.out.println("Error al cerrar la conexión: " + ex.getMessage());
+                ex.printStackTrace();
+            }
         }
+        return pqrsList;
     }
-    return pqrsList;
-}
 
     /**
      * Verifica si ya existe una PQRS con los mismos datos para el mismo usuario
@@ -180,14 +180,14 @@ public List<PQRS> obtenerPQRS() throws SQLException {
             conexion = getConexion();
             if (conexion != null) {
                 // Consulta SQL para verificar si existe una PQRS con los mismos datos para el mismo usuario
-                String consultaExistencia = "SELECT COUNT(*) FROM PQRS WHERE usuario_id = ? AND PrimerNombre = ? AND SegundoNombre = ? AND PrimerApellido = ? AND SegundoApellido = ? AND Motivo = ? AND email = ? AND Telefono = ? AND Mensaje = ?";
+                String consultaExistencia = "SELECT COUNT(*) FROM PQRS WHERE usuario_id = ? AND PrimerNombre = ? AND SegundoNombre = ? AND PrimerApellido = ? AND SegundoApellido = ? AND TipoPQRS = ? AND email = ? AND Telefono = ? AND Mensaje = ?";
                 statement = conexion.prepareStatement(consultaExistencia);
                 statement.setInt(1, usuarioId);
                 statement.setString(2, primerNombre);
                 statement.setString(3, segundoNombre);
                 statement.setString(4, primerApellido);
                 statement.setString(5, segundoApellido);
-                 statement.setInt(6, motivo);
+                statement.setInt(6, motivo);
                 statement.setString(7, email);
                 statement.setString(8, telefono);
                 statement.setString(9, mensaje);
@@ -322,147 +322,147 @@ public List<PQRS> obtenerPQRS() throws SQLException {
         return idPQRS;
     }
 
-   
-/**
- * Elimina una PQRS específica de la base de datos.
- *
- * @param idPQRS El ID de la PQRS que se va a eliminar.
- * @throws SQLException Si ocurre algún error al intentar acceder a la base
- *                      de datos.
- */
-public void eliminarPQRS(int idPQRS) throws SQLException {
-    Connection conexion = null;
-    PreparedStatement statement = null;
-    ResultSet resultSet = null;
-    try {
-        conexion = getConexion();
-        if (conexion != null) {
-            String obtenerRutaSQL = "SELECT RutaPDF FROM PQRS WHERE id = ?";
-            statement = conexion.prepareStatement(obtenerRutaSQL);
-            statement.setInt(1, idPQRS);
-            resultSet = statement.executeQuery();
-            
-            String rutaDocumento = null;
-            if (resultSet.next()) {
-                rutaDocumento = resultSet.getString("RutaPDF");
-            }
-            
-            String eliminarPQRSSQL = "DELETE FROM PQRS WHERE id = ?";
-            statement = conexion.prepareStatement(eliminarPQRSSQL);
-            statement.setInt(1, idPQRS);
+    /**
+     * Elimina una PQRS específica de la base de datos.
+     *
+     * @param idPQRS El ID de la PQRS que se va a eliminar.
+     * @throws SQLException Si ocurre algún error al intentar acceder a la base
+     * de datos.
+     */
+    public void eliminarPQRS(int idPQRS) throws SQLException {
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            conexion = getConexion();
+            if (conexion != null) {
+                String obtenerRutaSQL = "SELECT RutaPDF FROM PQRS WHERE id = ?";
+                statement = conexion.prepareStatement(obtenerRutaSQL);
+                statement.setInt(1, idPQRS);
+                resultSet = statement.executeQuery();
 
-            int filasEliminadas = statement.executeUpdate();
-            if (filasEliminadas > 0) {
-                System.out.println("PQRS eliminada correctamente.");
-                // Eliminar el documento asociado si existe
-                if (rutaDocumento != null) {
-                    File documento = new File(rutaDocumento);
-                    if (documento.exists()) {
-                        if (documento.delete()) {
-                            System.out.println("Documento asociado eliminado correctamente.");
-                        } else {
-                            System.out.println("No se pudo eliminar el documento asociado.");
+                String rutaDocumento = null;
+                if (resultSet.next()) {
+                    rutaDocumento = resultSet.getString("RutaPDF");
+                }
+
+                String eliminarPQRSSQL = "DELETE FROM PQRS WHERE id = ?";
+                statement = conexion.prepareStatement(eliminarPQRSSQL);
+                statement.setInt(1, idPQRS);
+
+                int filasEliminadas = statement.executeUpdate();
+                if (filasEliminadas > 0) {
+                    System.out.println("PQRS eliminada correctamente.");
+                    // Eliminar el documento asociado si existe
+                    if (rutaDocumento != null) {
+                        File documento = new File(rutaDocumento);
+                        if (documento.exists()) {
+                            if (documento.delete()) {
+                                System.out.println("Documento asociado eliminado correctamente.");
+                            } else {
+                                System.out.println("No se pudo eliminar el documento asociado.");
+                            }
                         }
                     }
+                } else {
+                    System.out.println("No se pudo eliminar la PQRS.");
                 }
-            } else {
-                System.out.println("No se pudo eliminar la PQRS.");
             }
-        }
-    } catch (SQLException e) {
-        System.out.println("Error al eliminar la PQRS: " + e.getMessage());
-        throw e;
-    } finally {
-        if (resultSet != null) {
-            resultSet.close();
-        }
-        if (statement != null) {
-            statement.close();
-        }
-        if (conexion != null) {
-            conexion.close();
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar la PQRS: " + e.getMessage());
+            throw e;
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
+            }
         }
     }
-}
 
-  /**
- * Edita una PQRS existente en la base de datos.
- *
- * @param idPQRS ID de la PQRS que se va a editar.
- * @param primerNombre Nuevo primer nombre del remitente.
- * @param segundoNombre Nuevo segundo nombre del remitente.
- * @param primerApellido Nuevo primer apellido del remitente.
- * @param segundoApellido Nuevo segundo apellido del remitente.
- * @param motivo Nuevo motivo de la PQRS.
- * @param email Nuevo correo electrónico del remitente.
- * @param telefono Nuevo número de teléfono del remitente.
- * @param mensaje Nuevo mensaje adicional (opcional).
- * @param nuevaRutaPDF Nueva ruta del archivo PDF adjunto.
- * @throws SQLException Si ocurre un error de SQL durante la actualización.
- */
-public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String email, String telefono, String mensaje, String nuevaRutaPDF) throws SQLException {
-    Connection conexion = null;
-    PreparedStatement statement = null;
-    ResultSet rs = null;
-    try {
-        conexion = getConexion();
-        if (conexion != null) {
-            // Consulta SQL para obtener la ruta del PDF actual antes de la actualización
-            String sqlSelect = "SELECT RutaPDF FROM PQRS WHERE id = ?";
-            statement = conexion.prepareStatement(sqlSelect);
-            statement.setInt(1, idPQRS);
-            rs = statement.executeQuery();
+    /**
+     * Edita una PQRS existente en la base de datos.
+     *
+     * @param idPQRS ID de la PQRS que se va a editar.
+     * @param primerNombre Nuevo primer nombre del remitente.
+     * @param segundoNombre Nuevo segundo nombre del remitente.
+     * @param primerApellido Nuevo primer apellido del remitente.
+     * @param segundoApellido Nuevo segundo apellido del remitente.
+     * @param motivo Nuevo motivo de la PQRS.
+     * @param email Nuevo correo electrónico del remitente.
+     * @param telefono Nuevo número de teléfono del remitente.
+     * @param mensaje Nuevo mensaje adicional (opcional).
+     * @param nuevaRutaPDF Nueva ruta del archivo PDF adjunto.
+     * @throws SQLException Si ocurre un error de SQL durante la actualización.
+     */
+    public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido, String motivo, String email, String telefono, String mensaje, String nuevaRutaPDF) throws SQLException {
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet rs = null;
+        try {
+            conexion = getConexion();
+            if (conexion != null) {
+                // Consulta SQL para obtener la ruta del PDF actual antes de la actualización
+                String sqlSelect = "SELECT RutaPDF FROM PQRS WHERE id = ?";
+                statement = conexion.prepareStatement(sqlSelect);
+                statement.setInt(1, idPQRS);
+                rs = statement.executeQuery();
 
-            String rutaAnteriorPDF = null;
-            if (rs.next()) {
-                rutaAnteriorPDF = rs.getString("RutaPDF");
-            }
+                String rutaAnteriorPDF = null;
+                if (rs.next()) {
+                    rutaAnteriorPDF = rs.getString("RutaPDF");
+                }
 
-            // Consulta SQL para actualizar los datos de la PQRS
-            String sqlUpdate = "UPDATE PQRS SET PrimerNombre = ?, SegundoNombre = ?, PrimerApellido = ?, SegundoApellido = ?, TipoPQRS = ?, email = ?, Telefono = ?, Mensaje = ?, RutaPDF = ? WHERE id = ?";
-            statement = conexion.prepareStatement(sqlUpdate);
-            statement.setString(1, primerNombre);
-            statement.setString(2, segundoNombre);
-            statement.setString(3, primerApellido);
-            statement.setString(4, segundoApellido);
-            statement.setString(5, motivo);
-            statement.setString(6, email);
-            statement.setString(7, telefono);
-            statement.setString(8, mensaje);
-            statement.setString(9, nuevaRutaPDF);
-            statement.setInt(10, idPQRS);
+                // Consulta SQL para actualizar los datos de la PQRS
+                String sqlUpdate = "UPDATE PQRS SET PrimerNombre = ?, SegundoNombre = ?, PrimerApellido = ?, SegundoApellido = ?, TipoPQRS = ?, email = ?, Telefono = ?, Mensaje = ?, RutaPDF = ? WHERE id = ?";
+                statement = conexion.prepareStatement(sqlUpdate);
+                statement.setString(1, primerNombre);
+                statement.setString(2, segundoNombre);
+                statement.setString(3, primerApellido);
+                statement.setString(4, segundoApellido);
+                statement.setString(5, motivo);
+                statement.setString(6, email);
+                statement.setString(7, telefono);
+                statement.setString(8, mensaje);
+                statement.setString(9, nuevaRutaPDF);
+                statement.setInt(10, idPQRS);
 
-            int filasActualizadas = statement.executeUpdate();
-            if (filasActualizadas > 0) {
-                System.out.println("PQRS editada correctamente.");
-                // Eliminar el PDF anterior si existe
-                if (rutaAnteriorPDF != null && !rutaAnteriorPDF.isEmpty()) {
-                    File archivoAnterior = new File(rutaAnteriorPDF);
-                    if (archivoAnterior.exists()) {
-                        archivoAnterior.delete();
-                        System.out.println("Documento PDF anterior eliminado correctamente.");
+                int filasActualizadas = statement.executeUpdate();
+                if (filasActualizadas > 0) {
+                    System.out.println("PQRS editada correctamente.");
+                    // Eliminar el PDF anterior si existe
+                    if (rutaAnteriorPDF != null && !rutaAnteriorPDF.isEmpty()) {
+                        File archivoAnterior = new File(rutaAnteriorPDF);
+                        if (archivoAnterior.exists()) {
+                            archivoAnterior.delete();
+                            System.out.println("Documento PDF anterior eliminado correctamente.");
+                        }
                     }
+                } else {
+                    System.out.println("No se pudo editar la PQRS.");
                 }
-            } else {
-                System.out.println("No se pudo editar la PQRS.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al editar la PQRS: " + e.getMessage());
+            throw e;
+        } finally {
+            // Cerrar recursos
+            if (rs != null) {
+                rs.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
             }
         }
-    } catch (SQLException e) {
-        System.out.println("Error al editar la PQRS: " + e.getMessage());
-        throw e;
-    } finally {
-        // Cerrar recursos
-        if (rs != null) {
-            rs.close();
-        }
-        if (statement != null) {
-            statement.close();
-        }
-        if (conexion != null) {
-            conexion.close();
-        }
     }
-}
+
     /**
      * Obtiene todos los motivos de PQRS almacenados en la base de datos.
      *
@@ -505,47 +505,49 @@ public void editarPQRS(int idPQRS, String primerNombre, String segundoNombre, St
 
         return motivosList;
     }
-/**
- * Obtiene el nombre del motivo basado en su ID.
- *
- * @param idMotivo ID del motivo.
- * @return Nombre del motivo, o null si no se encuentra.
- * @throws SQLException Si ocurre un error de SQL al obtener el nombre del motivo.
- */
-public static String obtenerNombreMotivo(int idMotivo) throws SQLException {
-    Connection conexion = null;
-    PreparedStatement statement = null;
-    ResultSet resultSet = null;
-    String nombreMotivo = null;
 
-    try {
-        conexion = ConexionBaseDeDatos.getConexion(); // Implementa este método para obtener una conexión a la base de datos
-        if (conexion != null) {
-            String sql = "SELECT Motivo FROM TipoPQRS WHERE id = ?";
-            statement = conexion.prepareStatement(sql);
-            statement.setInt(1, idMotivo);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                nombreMotivo = resultSet.getString("Motivo");
+    /**
+     * Obtiene el nombre del motivo basado en su ID.
+     *
+     * @param idMotivo ID del motivo.
+     * @return Nombre del motivo, o null si no se encuentra.
+     * @throws SQLException Si ocurre un error de SQL al obtener el nombre del
+     * motivo.
+     */
+    public static String obtenerNombreMotivo(int idMotivo) throws SQLException {
+        Connection conexion = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String nombreMotivo = null;
+
+        try {
+            conexion = ConexionBaseDeDatos.getConexion(); // Implementa este método para obtener una conexión a la base de datos
+            if (conexion != null) {
+                String sql = "SELECT Motivo FROM TipoPQRS WHERE id = ?";
+                statement = conexion.prepareStatement(sql);
+                statement.setInt(1, idMotivo);
+                resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    nombreMotivo = resultSet.getString("Motivo");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener el nombre del motivo: " + e.getMessage());
+            throw e;
+        } finally {
+            // Cierre de recursos
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (conexion != null) {
+                conexion.close();
             }
         }
-    } catch (SQLException e) {
-        System.out.println("Error al obtener el nombre del motivo: " + e.getMessage());
-        throw e;
-    } finally {
-        // Cierre de recursos
-        if (resultSet != null) {
-            resultSet.close();
-        }
-        if (statement != null) {
-            statement.close();
-        }
-        if (conexion != null) {
-            conexion.close();
-        }
-    }
 
-    return nombreMotivo;
-}
+        return nombreMotivo;
+    }
 
 }
