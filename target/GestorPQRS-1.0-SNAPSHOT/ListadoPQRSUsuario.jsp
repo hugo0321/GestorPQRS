@@ -214,7 +214,8 @@
                             <td class="estado"><%= pqrs.getEstado()%></td>
                             <td>
                                 <button type="button" class="btn btn-info btn-sm btn-visualizar">Visualizar</button>
-                                <button type="button" class="btn btn-danger btn-sm btn-eliminar" data-id="<%= pqrs.getId()%>">Eliminar</button>
+                                <button type="button" class="btn btn-danger btn-sm btn-eliminar" data-id="<%= pqrs.getId()%>" data-origen="<%= request.getRequestURL() %>">Eliminar</button>
+
                                 <button type="button" class="btn btn-success btn-sm btn-editar" data-toggle="modal" data-target="#editarPQRSModal" data-email="<%= pqrs.getEmail()%>" data-motivo="<%= pqrs.getIdMotivo()%>"
                                         data-ruta="<%= pqrs.getRutaPDF()%>"
                                         onclick="prellenarNombrePDF(this)">
@@ -361,7 +362,7 @@
                         </div>
                         <div class="form-group">
                             <label for="mensaje">Mensaje:</label>
-                            <textarea class="form-control" id="mensaje" name="mensaje" rows="5" required></textarea>
+                            <textarea class="form-control" id="mensaje" name="mensaje" rows="5" ></textarea>
                         </div>
                         <!-- Campo de carga de archivo PDF -->
                         <div class="form-group mb-3">
@@ -716,7 +717,7 @@
                     // Redireccionar a ListaPQRS.jsp después de eliminar la PQRS
                     xhr.onreadystatechange = function () {
                         if (xhr.readyState === 4 && xhr.status === 200) {
-                            window.location.href = 'ListaPQRS.jsp';
+                            window.location.href = 'ListadoPQRSUsuario.jsp';
                         }
                     };
                 }

@@ -61,7 +61,7 @@ public class EditarPQRSServlet extends HttpServlet {
         // Si se proporciona un archivo PDF, guardarlo en la carpeta del proyecto
         if (filePart != null && filePart.getSize() > 0) {
             String extension = fileName.substring(fileName.lastIndexOf("."));
-            String nuevoNombreArchivo = "Editado_" + motivoNombre + "_" + primerNombre + "_" + usuarioId + extension;
+            String nuevoNombreArchivo = "Editado_" + motivoNombre + "_" + primerNombre + "_" + usuarioId+"_"+id + extension;
             filePath = getServletContext().getRealPath("/pdfs/") + File.separator + nuevoNombreArchivo;
 
             // Guardar el archivo en la carpeta del proyecto

@@ -1,6 +1,6 @@
 <%-- 
     Document   : eliminarPQRS
-    Created on : 5/05/2024, 9:27:21 p. m.
+    Created on : 5/05/2024, 9:27:21 p. m.
     Author     : Hugo
 --%>
 
@@ -15,7 +15,7 @@
     int idPQRS = Integer.parseInt(request.getParameter("idPQRS"));
     // Obtener la página de origen (referer)
     String origen = request.getHeader("referer");
-
+ 
     // Intentar eliminar la PQRS con el ID especificado
     try {
         ControladorPQRS controlador = new ControladorPQRS(); // Instancia del controlador

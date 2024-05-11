@@ -116,7 +116,7 @@
                             <td class="nombre-usuario"><%= usuario.getNombreUsuario()%></td>
                             <td class="cedula"><%= usuario.getCedula()%></td>
                             <td class="email-registro"><%= usuario.getEmailRegistro()%></td>
-                            <td class="email-registro"><%= usuario.getRollUsuario()%></td>
+                            <td class="rol"><%= usuario.getRollUsuario()%></td>
                             <td>
                                 <button class="btn btn-info btn-sm btn-visualizar">Visualizar</button>
                                 <button class="btn btn-warning btn-sm btn-editar">Editar</button>

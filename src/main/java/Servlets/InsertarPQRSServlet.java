@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+import java.util.UUID;
+
 
 @WebServlet("/InsertarPQRSServlet")
 @MultipartConfig
@@ -34,7 +36,10 @@ public class InsertarPQRSServlet extends HttpServlet {
         String email = request.getParameter("email");
         String telefono = request.getParameter("telefono");
         String mensaje = request.getParameter("mensaje");
+        String IDUnico = UUID.randomUUID().toString();
 
+// Obtener el nombre del motivo
+            String motivoNombre = null;
         // Obtener el usuario_id de la sesión
         HttpSession session = request.getSession();
         int usuarioId = 0; // Inicializamos el usuarioId
@@ -55,40 +60,48 @@ public class InsertarPQRSServlet extends HttpServlet {
 
         // Obtener el archivo PDF
         Part filePart = request.getPart("pdfFile");
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // Nombre del archivo
-        String extension = fileName.substring(fileName.lastIndexOf(".")); // Obtenemos la extensión del archivo original
-
-        // Obtener el nombre del motivo
-        String motivoNombre = null;
-        try {
-            motivoNombre = ControladorPQRS.obtenerNombreMotivo(motivo);
-        } catch (SQLException e) {
-            // Manejar la excepción aquí
-            e.printStackTrace();
-            // Redirigir a una página de error o mostrar un mensaje al usuario
-            response.sendRedirect("ErrorObtenerMotivo.jsp");
-            return;
-        }
-
-        // Construir el nuevo nombre del archivo PDF
-        String nuevoNombreArchivo = motivoNombre + "_" + primerNombre + "_" + usuarioId + extension;
 
         // Inicializar la ruta del archivo en el servidor
         String filePath = null;
 
-        // Si se proporciona un archivo PDF, guardarlo en la carpeta del proyecto
         if (filePart != null && filePart.getSize() > 0) {
+            // Si se proporciona un archivo, obtener su nombre y extensión
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // Nombre del archivo
+
+            
+            try {
+                motivoNombre = ControladorPQRS.obtenerNombreMotivo(motivo);
+            } catch (SQLException e) {
+                // Manejar la excepción aquí
+                e.printStackTrace();
+                // Redirigir a una página de error o mostrar un mensaje al usuario
+                response.sendRedirect("ErrorObtenerMotivo.jsp");
+                return;
+            }
+
+            String extension = fileName.substring(fileName.lastIndexOf(".")); // Obtenemos la extensión del archivo original
+
+            // Construir el nuevo nombre del archivo PDF
+            String nuevoNombreArchivo = motivoNombre + "_" + primerNombre + "_" + usuarioId + "_"+ IDUnico + extension;
+
+            // Si se proporciona un archivo PDF, guardarlo en la carpeta del proyecto
             filePath = getServletContext().getRealPath("/pdfs/") + File.separator + nuevoNombreArchivo; // Ruta del archivo en el servidor
 
             // Guardar el archivo en la carpeta del proyecto
-            FileOutputStream outputStream = new FileOutputStream(new File(filePath));
-            InputStream fileContent = filePart.getInputStream();
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = fileContent.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
+            try (FileOutputStream outputStream = new FileOutputStream(new File(filePath));
+                 InputStream fileContent = filePart.getInputStream()) {
+                int read;
+                byte[] bytes = new byte[1024];
+                while ((read = fileContent.read(bytes)) != -1) {
+                    outputStream.write(bytes, 0, read);
+                }
+            } catch (IOException e) {
+                // Manejar la excepción aquí
+                e.printStackTrace();
+                // Redirigir a una página de error o mostrar un mensaje al usuario
+                response.sendRedirect("ErrorGuardarArchivo.jsp");
+                return;
             }
-            outputStream.close();
         }
 
         // Verificar si la PQRS es duplicada del mismo usuario
@@ -105,7 +118,17 @@ public class InsertarPQRSServlet extends HttpServlet {
             response.sendRedirect("ErrorRegistroPQRS.jsp");
             return;
         }
-
+// Obtener el nombre del motivo
+            
+            try {
+                motivoNombre = ControladorPQRS.obtenerNombreMotivo(motivo);
+            } catch (SQLException e) {
+                // Manejar la excepción aquí
+                e.printStackTrace();
+                // Redirigir a una página de error o mostrar un mensaje al usuario
+                response.sendRedirect("ErrorObtenerMotivo.jsp");
+                return;
+            }
         // Insertar la PQRS en la base de datos con la ruta del archivo y el usuario_id
         try {
             ControladorPQRS.insertarPQRS(primerNombre, segundoNombre, primerApellido, segundoApellido, motivo, email, telefono, mensaje, filePath, usuarioId);
