@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+import java.util.UUID;
 
 @WebServlet("/EditarPQRSServlet")
 @MultipartConfig(maxFileSize = 1024 * 1024 * 20) // Tamaño máximo de archivo: 20 MB
@@ -36,6 +37,7 @@ public class EditarPQRSServlet extends HttpServlet {
         String mensaje = request.getParameter("mensaje");
         String motivo = request.getParameter("motivo");
         String rutaPDF = request.getParameter("rutaPDFOriginal");
+        String IDUnico = UUID.randomUUID().toString();
 
         // Obtener el nombre del motivo y el ID del usuario
         String motivoNombre = null;
@@ -61,7 +63,7 @@ public class EditarPQRSServlet extends HttpServlet {
         // Si se proporciona un archivo PDF, guardarlo en la carpeta del proyecto
         if (filePart != null && filePart.getSize() > 0) {
             String extension = fileName.substring(fileName.lastIndexOf("."));
-            String nuevoNombreArchivo = "Editado_" + motivoNombre + "_" + primerNombre + "_" + usuarioId+"_"+id + extension;
+            String nuevoNombreArchivo = "Editado_" + motivoNombre + "_" + primerNombre + "_" + usuarioId+"_"+id +IDUnico+ extension;
             filePath = getServletContext().getRealPath("/pdfs/") + File.separator + nuevoNombreArchivo;
 
             // Guardar el archivo en la carpeta del proyecto

@@ -399,7 +399,8 @@
             var fileInput = document.getElementById('pdfFile');
             fileInput.click();
         }
-
+ // Variable global para almacenar la ruta del PDF original
+        var rutaPDFOriginal;
     // Evento cuando se selecciona un nuevo archivo PDF
         document.getElementById('pdfFile').addEventListener('change', function () {
             if (this.files.length > 0) {
@@ -407,13 +408,16 @@
             }
         });
 
-        function eliminarPDF() {
-            document.getElementById('pdfFileName').value = 'Eliminado'; // Establecer el nombre del PDF en blanco
-            document.getElementById('rutaPDF').innerText = 'Eliminado'; // Establecer "Eliminado" como el valor de rutaPDF en la tabla
-        }
+       function eliminarPDF() {
+    document.getElementById('pdfFileName').value = 'Eliminado'; // Establecer el nombre del PDF en blanco
+    // document.getElementById('rutaPDF').innerText = 'Eliminado'; // Establecer "Eliminado" como el valor de rutaPDF en la tabla
+    rutaPDFOriginal = null; // Asignar null a rutaPDFOriginal
+    // Establecer el valor de rutaPDFOriginal en el campo de entrada oculto
+    document.getElementById('rutaPDFOriginal').value = rutaPDFOriginal;
+}
 
-    // Variable global para almacenar la ruta del PDF original
-        var rutaPDFOriginal;
+
+   
 
     // Función para abrir el modal de editar PQRS y prellenar el nombre del PDF
         function abrirModalEditar(btnEditar) {
@@ -441,6 +445,9 @@
             if (pdfFileName === 'Eliminado') {
                 // Usar la ruta del PDF original
                 pdfFileName = rutaPDFOriginal.split('/').pop();
+                       $('#pdfFileName').val('');
+
+
             }
 
             // Establecer el nombre del archivo PDF en el campo correspondiente
