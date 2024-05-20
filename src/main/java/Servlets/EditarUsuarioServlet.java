@@ -24,7 +24,7 @@ public class EditarUsuarioServlet extends HttpServlet {
 
         try {
             ControladorUsuarios.editarUsuario(id, nombreUsuario, cedula, emailRegistro);
-            response.sendRedirect("listado_usuarios.jsp"); // Redirige a la página de listado de usuarios
+            response.sendRedirect("listaUsuarios.jsp"); // Redirige a la página de listado de usuarios
         } catch (SQLException e) {
             e.printStackTrace();
             // Manejo de errores

@@ -204,19 +204,19 @@
                 <div id="LoginServlet">
                     <form action="LoginServlet" method="post">
                         <div class="mb-3">
-                            <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuario">
+                            <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuario" required>
                         </div>
                         <div class="mb-3">
-                            <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Contraseña">
+                            <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Contraseña" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Iniciar sesión</button>
                         <!-- Botón para abrir la ventana flotante de registro -->
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registroModal">Crear cuenta</button>
                         <!-- Botón para abrir la ventana flotante de recuperación de contraseña o usuario -->
                         <button type="button" class="btn btn-recuperar" data-bs-toggle="modal" data-bs-target="#recuperarModal">Recuperar contraseña o usuario</button>
-
                     </form>
                 </div>
+
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
                         const cedulaInput = document.getElementById('cedulaRecuperar');

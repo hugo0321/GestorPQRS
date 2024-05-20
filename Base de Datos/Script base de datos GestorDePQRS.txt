@@ -1,0 +1,54 @@
+drop database if exists GestorDePQRS;
+create database GestorDePQRS;
+use  GestorDePQRS;
+
+-- Creación de la tabla para Motivos de la PQRS
+CREATE TABLE TipoPQRS (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Motivo VARCHAR(50) UNIQUE
+);
+-- Creación de la tabla para usuarios
+CREATE TABLE Usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_usuario VARCHAR(50) UNIQUE,
+    cedula VARCHAR(11) UNIQUE,
+    contrasena VARCHAR(255),
+    emailRegistro VARCHAR(255),
+    Roll VARCHAR(20) DEFAULT 'usuarioNormal' -- Definiendo el roll del usuario
+);
+
+-- Creación de la tabla para PQRS
+CREATE TABLE PQRS (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    PrimerNombre VARCHAR(50) NOT NULL,
+    SegundoNombre VARCHAR(50),
+    PrimerApellido VARCHAR(50) NOT NULL,
+    SegundoApellido VARCHAR(50),
+    TipoPQRS int,
+    email VARCHAR(100) NOT NULL,
+    Telefono VARCHAR(20) NOT NULL,
+    Mensaje TEXT,
+    RutaPDF VARCHAR(255),
+    HoraSolicitud TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Estado VARCHAR(20) DEFAULT 'Recibida', -- Definiendo el campo de estado
+    usuario_id INT,
+    FOREIGN KEY (usuario_id) REFERENCES Usuarios(id),
+    FOREIGN KEY (TipoPQRS) REFERENCES TipoPQRS(id)
+);
+
+
+
+-- Inserción de un usuario usuario de ejemplo
+INSERT INTO TipoPQRS (Motivo) VALUES ("Peticion");
+INSERT INTO TipoPQRS (Motivo) VALUES ("Queja");
+INSERT INTO TipoPQRS (Motivo) VALUES ("Reclamo");
+INSERT INTO TipoPQRS (Motivo) VALUES ("Solicitud");
+INSERT INTO TipoPQRS (Motivo) VALUES ("Felicitacion");
+
+INSERT INTO Usuarios (nombre_usuario,cedula, contrasena,emailRegistro) VALUES ('usuario','1196283465', '12345','usuario@gmail.com');
+INSERT INTO Usuarios (nombre_usuario,cedula, contrasena,emailRegistro, Roll) VALUES ('usuarioAdmin','1196283993', '12345','usuarioadmin@gmail.com','Administrador');
+INSERT INTO PQRS (PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, TipoPQRS, email, Telefono, Mensaje, RutaPDF, usuario_id) 
+VALUES ('Juan', 'Carlos', 'Perez', 'Gonzalez', '3', 'juan@example.com', '123456789', 'Tengo una peticion.', '/ruta/a/archivo.pdf', 1);
+INSERT INTO PQRS (PrimerNombre, SegundoNombre, PrimerApellido, SegundoApellido, TipoPQRS, email, Telefono, Mensaje, RutaPDF, usuario_id, Estado) 
+VALUES ('Juan', 'Carlos', 'Perez', 'Gonzalez', '3', 'juan@example.com', '123456789', 'Tengo una peticion.', '/ruta/a/archivo.pdf', 1, "Respondida");
+

@@ -9,11 +9,13 @@ package com.mycompany.tutorial;
  * @author Hugo
  */
 public class Usuario {
+
     private int id;
     private String nombreUsuario;
     private String cedula;
     private String contrasena;
     private String emailRegistro;
+    private String rollUsuario;
 
     // Constructor
     public Usuario() {
@@ -58,22 +60,32 @@ public class Usuario {
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
-public String getEmailRegistro() {
-    return emailRegistro;
-}
 
-public void setEmailRegistro(String emailRegistro) {
-    this.emailRegistro = emailRegistro;
-}
+    public String getEmailRegistro() {
+        return emailRegistro;
+    }
+
+    public void setEmailRegistro(String emailRegistro) {
+        this.emailRegistro = emailRegistro;
+    }
+//
+
+    public String getRollUsuario() {
+        return rollUsuario;
+    }
+
+    public void setRollUsuario(String rollUsuario) {
+        this.rollUsuario = rollUsuario;
+    }
 
     // toString para representación de la clase
     @Override
     public String toString() {
-        return "Usuario{" +
-                "id=" + id +
-                ", nombreUsuario='" + nombreUsuario + '\'' +
-                ", cedula='" + cedula + '\'' +
-                ", contrasena='" + contrasena + '\'' +
-                '}';
+        return "Usuario{"
+                + "id=" + id
+                + ", nombreUsuario='" + nombreUsuario + '\''
+                + ", cedula='" + cedula + '\''
+                + ", contrasena='" + contrasena + '\''
+                + '}';
     }
 }

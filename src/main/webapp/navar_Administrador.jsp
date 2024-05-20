@@ -11,13 +11,20 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Navbar</title>
+        <title>Menú Administrador</title>
         <!-- Bootstrap CSS -->
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
         <!-- Bootstrap JS -->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
         <!-- Custom CSS -->
         <style>
+            /* Estilos personalizados */
+.navbar-text {
+    color: #ffffff; /* Cambia el color del texto del nombre del administrador a blanco */
+    font-size: 1rem; /* Ajusta el tamaño del texto del nombre del administrador */
+    margin-right: 20px; /* Añade un margen derecho entre el nombre del administrador y el botón de cerrar sesión */
+}
+
             .navbar {
                 background-color: #343a40; /* Cambia el color de fondo del navbar */
             }
@@ -67,7 +74,7 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Navbar</a>
+                <a class="navbar-brand" href="#">Administrador</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -80,11 +87,21 @@
                         <li class="nav-item">
                             <a class="nav-link" href="ListaUsuarios.jsp">Usuarios</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pricing</a>
-                        </li>
+                      
                     </ul>
-
+ <!-- Mostrar nombre del administrador -->
+<li class="nav-item">
+    <span class="navbar-text text-white"> <!-- Agregamos la clase text-white para hacer que el texto sea blanco -->
+        <% HttpSession laSesion = request.getSession(false);
+            if (laSesion != null && laSesion.getAttribute("username") != null) {
+                String username = (String) laSesion.getAttribute("username");
+        %>
+        Bienvenido, <%= username%>!
+        <% } else { %>
+        No se ha iniciado sesión
+        <% } %>
+    </span>
+</li>
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
                             <form action="CerrarSesionServlet" method="post">

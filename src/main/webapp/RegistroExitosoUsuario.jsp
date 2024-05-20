@@ -93,7 +93,7 @@
             <% } else { %>
             <p>
                 <%-- Mensaje específico para registro exitoso --%>
-                Te hemos enviado un correo con la información de tu cuenta.
+                Te hemos enviado un correo a <%= request.getAttribute("email") %>  con la información de tu cuenta.
             </p>
             <p>Serás redirigido a la página principal en <span id="countdown">5</span> segundos.</p>
             <script>

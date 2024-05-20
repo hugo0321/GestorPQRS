@@ -188,12 +188,17 @@ public class ControladorEmails {
             message.setSubject("Registro Exitoso de Usuario en el Sistema de PQRS");
 
             // Construir el texto del mensaje con los datos del formulario
+            // Obteniendo solo los últimos tres dígitos de la contraseña
+            String contrasenaVisible = contrasena.substring(Math.max(0, contrasena.length() - 3));
+
+// Obteniendo solo los últimos tres dígitos de la cédula
+            String cedulaVisible = Cedula.substring(Math.max(0, Cedula.length() - 3));
             String textoMensaje = "Estimado/a,\n\nsu Usuario ha sido registrado en el sistema.\n\n";
             textoMensaje += "<h2>Detalles de su cuenta:</h2>\n";
             textoMensaje += "<p><strong>Usuario:</strong> " + NombreUsuario + "</p>\n";
-            textoMensaje += "<p><strong>Contraseña:</strong> " + contrasena + "</p>\n";
+            textoMensaje += "<p><strong>Contraseña:</strong> *****" + contrasenaVisible + "</p>\n";
             textoMensaje += "<p><strong>email:</strong> " + email + "</p>\n";
-            textoMensaje += "<p><strong>cedula:</strong> " + Cedula + "</p>\n";
+            textoMensaje += "<p><strong>Cédula:</strong> ********" + cedulaVisible + "</p>\n";
 
             textoMensaje += "<p>Atentamente,<br>El equipo de soporte.</p>\n";
             textoMensaje += "<p><br>Ahora puede iniciar sesión y mandar sus PQRS </p>\n";
